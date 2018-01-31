@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <meta http-equiv='X-UA-Compatible' content='ie=edge' />
+  <title>MineSweeper</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+  <h1>MineSweeper!</h1>
+  <h3>A game of skill? Or chance?</h3>
+  <p id='namePara'>Name: <input type="text" id="playerName">
+  <button id="enterName">Enter</button></p>
+
+  <p id='scorePara'></p>
+  
+  <div id = 'passPara'>
+    <p>Password: <input type="password" id = "playerPassword1"></p>
+    <p>Confirm Password: <input type = "password" id = "playerPassword2"></p>
+    <button id="enterPass">Enter</button>
+  </div>
+
+  <div id = 'securityPara'>
+    <p>Security Question: <input type = "text" id = "securityQuestion"></p>
+    <p>Security Answer: <input type = "text" id = "securityAnswer"></p>
+    <button id="enterSecurity">Enter</button>
+  </div>
+
+  <p id="score"></p>
+
+  <div id = "game-board">
+  </div>
+</body>
+  <script src='./script.js'></script>
+</html>
