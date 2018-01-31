@@ -7,97 +7,68 @@
 //
 
 class Player {
-	constructor(/*name, playerScore, size, playerData, bestScore, password, securityQuestion, securityAnswer*/) {
-		/*this.name = name;
+	constructor(name, playerScore, size, playerData, bestScore, password) {
+		this.name = name;
 		this.score = playerScore;
 		this.size = size;
 		this.data = playerData;
 		this.bestScore = bestScore;
 		this.password = password;
-		this.securityQuestion = securityQuestion;
-		this.securityAnswer = securityAnswer;*/
 	}
 }
 
 let loopCounter = 0;
 
 document.getElementById('passPara').style.display = 'none';
-document.getElementById('securityPara').style.display = 'none';
 document.getElementById('enterName').addEventListener('click', playerPass);
-document.getElementById('enterSecurity').addEventListener('click', setUp);
 document.getElementById('enterPass').addEventListener('click', setUp);
 
 function playerPass() {
+	document.getElementById('namePara').style.display = 'none';
 	document.getElementById('passPara').style.display = 'block';
 }
 
 function setUp() {	
-	let passValid = setUpPass;
-	if (passValid) {
-		let playerOne = new Player();
+	if (setUpPass()) {
 		document.getElementById('passPara').style.display = 'none';
-		document.getElementById('securityPara').style.display = 'block';
-		playerOne.passWord = document.getElementById("playerPassword1").value;
-		playerOne.playerName = document.getElementById("playerName").value.toLowerCase();
-		playerOne.playerData = JSON.parse(localStorage.getItem(playerName));
-		let passSecure = setUpSecure(playerOne);
-		if (playerOne.playerData != null) {
-			if (passSecure) {
-				document.getElementById('securityPara').style.display = 'none';
-				gamePlay(playerOne);
-			}
-		} else if (passSecure) {
-			playerOne.securityQuestion = document.getElementById("securityQuestion").value;
-			playerOne.securityAnswer = document.getElementById("securityAnswer").value.toLowerCase();
-			gamePlay(playerOne);
+		password = document.getElementById("playerPassword1").value;
+		playerName = document.getElementById("playerName").value.toLowerCase();
+		playerData = JSON.parse(localStorage.getItem(playerName));
+		//let boardSize = prompt("How big would you like the board?");
+		let boardSize = 10;
+
+		if (playerData === null) {
+			playerData = {"name": playerName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "password": password};
+			localStorage.setItem(playerName, JSON.stringify(playerData));
+			bestScore = 0;
+			playerOne = new Player(playerName, 0, boardSize, playerData, bestScore, password);
+			playerName = capitalizeName(playerName);
+			document.getElementById('scorePara').innerHTML = "Good luck, " + playerName;
+		} else {
+			bestScore = playerData.bestScore;
+			playerOne = new Player(playerData.playerName, 0, boardSize, playerData, bestScore, playerData.password);
+			playerName = capitalizeName(playerName);
+			document.getElementById('scorePara').innerHTML = "Welcome back, " + playerName + ". Previous best score: " + playerData.bestScore;
 		}
+		
+		createMineArr(playerOne);
 	}
+}
+
+function capitalizeName(name) {
+	return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 function setUpPass() {
 	let passOne = document.getElementById("playerPassword1").value;
 	let passTwo = document.getElementById("playerPassword2").value;
-
+	console.log(passOne, passTwo);
 	let playerName = document.getElementById("playerName").value.toLowerCase();
 	let playerData = JSON.parse(localStorage.getItem(playerName));
-	
-	valPlayer = validate(playerName, passOne, passTwo, playerData);
-	if (valPlayer) {
+	console.log(playerData);
+	if (validate(playerName, passOne, passTwo, playerData)) {
 		return true;
 	}
-}
-
-function setUpSecure(playerOne) {
-	if (playerOne.playerData != null) {
-		let inputSecureQuestion = document.getElementById("securityQuestion").innerHTML = playerData.securityQuestion;
-		let inputSecureAnswer = document.getElementById("securityAnswer").value.toLowerCase();
-		let secureQuestion = playerOne.playerData.secureQuestion;
-		let secureAnswer = playerOne.playerData.secureAnswer;
-		
-		if (inputSecureAnswer === secureAnswer) {
-			return true;
-		} else {
-			alert("Incorrect security answer");
-			return false;
-		}
-	} else {
-		return true;
-	}
-}
-
-function gamePlay(playerOne) {
-	//let boardSize = prompt("How big would you like the board?");
-	let boardSize = 10;
-	playerOne.size = boardSize;
-	
-	if (playerOne.playerData === null) {
-		bestScore = 0;
-	} else {
-		bestScore = playerOne.playerData.bestScore;
-	}
-	
-	playerOne.bestScore = bestScore;
-	playerOne.score = 0;
 }
 
 function erasePassword() {
@@ -106,33 +77,22 @@ function erasePassword() {
 }
 
 function validate(playerName, passOne, passTwo, playerData) {
-	if (loopCounter != 3) {
-		if (passOne === passTwo) {
-			if (playerData === null) {
-				alert("Your password has been saved, please enter a security question and answer.");
-				document.getElementById('namePara').innerHTML = "Good luck, " + playerName;
-				playerData = {"name": playerName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "password": passOne};
-				localStorage.setItem(playerName, JSON.stringify(playerData));
-				return true;
-			} else {
-				if (passOne === playerData.password) {
-					localStorage.setItem(playerName, JSON.stringify(playerData));
-					document.getElementById('namePara').innerHTML = "Welcome back, " + playerName;
-					document.getElementById('scorePara').innerHTML = "Previous best score: " + playerData.bestScore;
-					return true;		
-				} else {
-					alert("Incorrect password...");
-					loopCounter++;
-				}
-			}
+	if (passOne === passTwo) {
+		if (playerData === null) {
+			return true;
 		} else {
-			alert("Your passwords don't match, please check your typing and try again!");
-			loopCounter++;
+			console.log(passOne, passTwo);
+			console.log(playerData.password);
+			if (passOne === playerData.password) {
+				return true;		
+			} else {
+				alert("Incorrect password...");
+				return false;
+			}
 		}
 	} else {
-		alert("You provided three incorrect passwords, please answer your security question");
-		document.getElementById('securityPara').style.display = 'block'
-
+		alert("Your passwords don't match, please check your typing and try again!");
+		return false;
 	}
 }
 
@@ -179,18 +139,48 @@ function addSquare(i, k, tr, playerOne) {
 function clickFunction(e, playerOne) {
 	let xLoc = e.target.getAttribute('locX');
 	let yLoc = e.target.getAttribute('locY');
-	if (e.button != 3) {
-		if (playerOne.mineArr[xLoc][yLoc].value > 9) {
-			playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_bomb.png')
-			endGame(playerOne);
+	if (!checkWin(playerOne)) {
+		if (e.button != 2) {
+			if (playerOne.mineArr[xLoc][yLoc].value > 9) {
+				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_bomb.png')
+				endGame(playerOne);
+			}
+			checkForMine(xLoc, yLoc, playerOne);
+			updateBoard(playerOne);
+			console.log(playerOne.score);
+		} else if (playerOne.mineArr[xLoc][yLoc].status != 'open'){
+			playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_flag.png');
 		}
-		checkForMine(xLoc, yLoc, playerOne);
-		updateBoard(playerOne);
-		console.log(playerOne.score);
-	} else if (playerOne.mineArr[xLoc][yLoc].status != 'open'){
-		playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_flag.png');
+		document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
+	} else {
+		alert("You won!!!! Adding fifty to your score!");
+		playerOne.score += 50;
+		endGame(playerOne);
 	}
-	document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
+}
+
+function checkWin(playerOne) {
+	let win = true;
+	for (let i = 0; i < playerOne.size; i++) {
+		for (let k = 0; k < playerOne.size; k++) {
+			if (playerOne.mineArr[i][k].status === 'closed' && playerOne.mineArr[i][k].value < 10) {
+				win = false;
+			}
+		}
+	}
+	return win;
+}
+
+function revealBoard(playerOne) {
+	for (let i = 0; i < playerOne.size; i++) {
+		for (let k = 0; k < playerOne.size; k++) {
+			if (playerOne.mineArr[i][k].value === 0) {
+				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_10.png');
+			} else {
+				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_' + playerOne.mineArr[i][k].value + '.png');
+			}
+		}
+	}
 }
 
 function updateBoard(playerOne) {
@@ -224,37 +214,37 @@ function populateMines(playerOne) {
 		randomNum += 5;
 	}
 	
-	let ranX, ranY = 0;
+	let x, y = 0;
 	
 	for (let i = 0; i < randomNum; i++) {
-		ranX = Math.floor(Math.random() * playerOne.size);
-		ranY = Math.floor(Math.random() * playerOne.size);
+		x = Math.floor(Math.random() * playerOne.size);
+		y = Math.floor(Math.random() * playerOne.size);
 
 //Make sure that we are not going out of bounds when checking the addition of
 //counters on the spaces in the next if statement
-		if (ranX + 1 > playerOne.size - 1) {
-			ranX -=1;
-		} else if (ranX - 1 < 0) {
-			ranX += 1;
+		if (x + 1 > playerOne.size - 1) {
+			x -=1;
+		} else if (x - 1 < 0) {
+			x += 1;
 		}
-		if (ranY + 1 > playerOne.size - 1) {
-			ranY -= 1;
-		} else if (ranY - 1 < 0) {
-			ranY += 1;
+		if (y + 1 > playerOne.size - 1) {
+			y -= 1;
+		} else if (y - 1 < 0) {
+			y += 1;
 		}
 
 //Check to make sure there isn't already a mine there, if there is
 //remove one from the loop counter and continue on
-		if (playerOne.mineArr[ranX][ranY].value != 10) {
-			playerOne.mineArr[ranX][ranY].value = 10;
-			playerOne.mineArr[ranX+1][ranY].value += 1;
-			playerOne.mineArr[ranX][ranY+1].value += 1;
-			playerOne.mineArr[ranX+1][ranY+1].value += 1;
-			playerOne.mineArr[ranX-1][ranY].value += 1;
-			playerOne.mineArr[ranX][ranY-1].value += 1;
-			playerOne.mineArr[ranX-1][ranY-1].value += 1;
-			playerOne.mineArr[ranX+1][ranY-1].value += 1;
-			playerOne.mineArr[ranX-1][ranY+1].value += 1;
+		if (playerOne.mineArr[x][y].value != 10) {
+			playerOne.mineArr[x][y].value = 10;
+			playerOne.mineArr[x+1][y].value += 1;
+			playerOne.mineArr[x-1][y].value += 1;
+			playerOne.mineArr[x][y+1].value += 1;
+			playerOne.mineArr[x][y-1].value += 1;
+			playerOne.mineArr[x+1][y+1].value += 1;
+			playerOne.mineArr[x-1][y-1].value += 1;
+			playerOne.mineArr[x+1][y-1].value += 1;
+			playerOne.mineArr[x-1][y+1].value += 1;
 		} else {
 			i -= 1;
 		}
@@ -335,6 +325,7 @@ function endGame(playerOne) {
 		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.bestScore, "password": playerOne.password};
 		localStorage.setItem(playerOne.name, JSON.stringify(data));
 	}
+	revealBoard(playerOne);
 	alert("Final score " + playerOne.score);
 	cleanBoard();
 }
