@@ -1,3 +1,7 @@
+body {
+	background-color: #F0F8FF;
+}
+
 img {
 	width: 2em;
 	height: 2em;
@@ -11,8 +15,10 @@ img {
 
 h1 {
 	font-family: 'Pacifico', cursive;
+	text-align: center;
 }
 
 h3 {
 	font-family: 'Shadows Into Light', cursive;
+	text-align: center;
 }

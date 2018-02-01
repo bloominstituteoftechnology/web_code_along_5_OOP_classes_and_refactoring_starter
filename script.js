@@ -14,6 +14,9 @@ let loopCounter = 0;
 document.getElementById('passPara').style.display = 'none';
 document.getElementById('enterName').addEventListener('click', playerPass);
 document.getElementById('enterPass').addEventListener('click', setUp);
+document.addEventListener('contextmenu', function(evt) {
+	evt.preventDefault();
+}, false);
 
 function playerPass() {
 	document.getElementById('namePara').style.display = 'none';
@@ -27,7 +30,7 @@ function setUp() {
 		playerName = document.getElementById("playerName").value.toLowerCase();
 		playerData = JSON.parse(localStorage.getItem(playerName));
 		//let boardSize = prompt("How big would you like the board?");
-		let boardSize = 10;
+		let boardSize = 20;
 
 		if (playerData === null) {
 			playerData = {"name": playerName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "password": password};
@@ -54,10 +57,8 @@ function capitalizeName(name) {
 function setUpPass() {
 	let passOne = document.getElementById("playerPassword1").value;
 	let passTwo = document.getElementById("playerPassword2").value;
-	console.log(passOne, passTwo);
 	let playerName = document.getElementById("playerName").value.toLowerCase();
 	let playerData = JSON.parse(localStorage.getItem(playerName));
-	console.log(playerData);
 	if (validate(playerName, passOne, passTwo, playerData)) {
 		return true;
 	}
@@ -73,8 +74,6 @@ function validate(playerName, passOne, passTwo, playerData) {
 		if (playerData === null) {
 			return true;
 		} else {
-			console.log(passOne, passTwo);
-			console.log(playerData.password);
 			if (passOne === playerData.password) {
 				return true;		
 			} else {
@@ -97,6 +96,7 @@ function createMineArr(playerOne) {
 		}
 	}
 	playerOne.mineArr = mineArr;
+	console.table(mineArr);
 	createBoard(playerOne);
 }
 
@@ -129,19 +129,22 @@ function addSquare(i, k, tr, playerOne) {
 }
 
 function clickFunction(e, playerOne) {
+	e = e || window.event;
 	let xLoc = e.target.getAttribute('locX');
 	let yLoc = e.target.getAttribute('locY');
 	if (!checkWin(playerOne)) {
-		if (e.button != 2) {
+		if (e.which != 3) {
 			if (playerOne.mineArr[xLoc][yLoc].value > 9) {
 				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_bomb.png')
 				endGame(playerOne);
 			}
 			checkForMine(xLoc, yLoc, playerOne);
 			updateBoard(playerOne);
-			console.log(playerOne.score);
-		} else if (playerOne.mineArr[xLoc][yLoc].status != 'open'){
-			playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_flag.png');
+		} else if (e.which === 3) {
+			if (playerOne.mineArr[xLoc][yLoc].status != 'open'){
+				console.log("Right Click");
+				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_flag.png');
+			}
 		}
 		document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
 	} else {
@@ -202,7 +205,7 @@ function updateBoard(playerOne) {
  
 function populateMines(playerOne) {
 	let size = playerOne.size;
-	let randomNum = Math.floor(Math.random() * size) + 5;
+	let randomNum = Math.floor(Math.random() * size) + size;
 //if the random number is less than five (less than five mines) add ten to it to 
 //ensure that there is a sufficient number of mines	
 	if (randomNum < 10) {
@@ -325,16 +328,18 @@ function xTooSmall(x) {
 }
 
 function endGame(playerOne) {
-	console.log("Final score: " + playerOne.score);
+	console.log("Final score: " + playerOne.score, playerOne.bestScore);
 	if (playerOne.score > playerOne.bestScore) {
+		console.log(playerOne.score, playerOne.bestScore);
 		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.score, "password": playerOne.password};
+		console.log(data);
 		localStorage.setItem(playerOne.name, JSON.stringify(data));
 	} else {
 		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.bestScore, "password": playerOne.password};
 		localStorage.setItem(playerOne.name, JSON.stringify(data));
 	}
 	revealBoard(playerOne);
-	setTimeout(function() {cleanBoard();}, 1000);
+	setTimeout(function() {cleanBoard();}, 3000);
 }
 
 function cleanBoard() {
