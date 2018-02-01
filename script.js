@@ -1,10 +1,4 @@
-//future refactoring:
-//break this all up into classes? Or is that not necessary...
-//...basically look through all of the functions
-//right now and figure out how to reduce the number of passes variables;
 //break out of bounds into its own function
-//break out tallying square numbers into its own function
-//
 
 class Player {
 	constructor(name, playerScore, size, playerData, bestScore, password) {
@@ -207,7 +201,8 @@ function updateBoard(playerOne) {
 
  
 function populateMines(playerOne) {
-	let randomNum = Math.floor(Math.random() * playerOne.size) + 5;
+	let size = playerOne.size;
+	let randomNum = Math.floor(Math.random() * size) + 5;
 //if the random number is less than five (less than five mines) add ten to it to 
 //ensure that there is a sufficient number of mines	
 	if (randomNum < 10) {
@@ -217,44 +212,55 @@ function populateMines(playerOne) {
 	let x, y = 0;
 	
 	for (let i = 0; i < randomNum; i++) {
-		x = Math.floor(Math.random() * playerOne.size);
-		y = Math.floor(Math.random() * playerOne.size);
-
-//Make sure that we are not going out of bounds when checking the addition of
-//counters on the spaces in the next if statement
-		if (x + 1 > playerOne.size - 1) {
-			x -=1;
-		} else if (x - 1 < 0) {
-			x += 1;
-		}
-		if (y + 1 > playerOne.size - 1) {
-			y -= 1;
-		} else if (y - 1 < 0) {
-			y += 1;
-		}
+		x = Math.floor(Math.random() * size);
+		y = Math.floor(Math.random() * size);
 
 //Check to make sure there isn't already a mine there, if there is
 //remove one from the loop counter and continue on
-		if (playerOne.mineArr[x][y].value != 10) {
-			playerOne.mineArr[x][y].value = 10;
-			playerOne.mineArr[x+1][y].value += 1;
-			playerOne.mineArr[x-1][y].value += 1;
-			playerOne.mineArr[x][y+1].value += 1;
-			playerOne.mineArr[x][y-1].value += 1;
-			playerOne.mineArr[x+1][y+1].value += 1;
-			playerOne.mineArr[x-1][y-1].value += 1;
-			playerOne.mineArr[x+1][y-1].value += 1;
-			playerOne.mineArr[x-1][y+1].value += 1;
-		} else {
-			i -= 1;
+		let tooManyMines = placeMine(x, y, size, playerOne);
+		if (tooManyMines) {
+			i -=1;
 		}
+	}
+}
+
+function placeMine(x, y, size, playerOne) {
+	if (playerOne.mineArr[x][y].value != 10) {
+		playerOne.mineArr[x][y].value = 10;
+		if (!xTooBig(x, size)) {
+			playerOne.mineArr[x+1][y].value += 1;
+		}
+		if (!xTooSmall(x)) {
+			playerOne.mineArr[x-1][y].value += 1;
+		}
+		if (!yTooBig(y, size)) {
+			playerOne.mineArr[x][y+1].value += 1;
+		}
+		if (!yTooSmall(y)) {
+			playerOne.mineArr[x][y-1].value += 1;
+		}
+		if (!xTooBig(x, size) && !yTooBig(y,Size)) {
+			playerOne.mineArr[x+1][y+1].value += 1;
+		}
+		if (!xTooSmall(x) && !yTooSmall(y)) {
+			playerOne.mineArr[x-1][y-1].value += 1;
+		}
+		if (!xTooBig(x, size) && !yTooSmall(y)) {
+			playerOne.mineArr[x+1][y-1].value += 1;
+		}
+		if (!xTooSmall(x) && !yTooBig(y, size)) {
+			playerOne.mineArr[x-1][y+1].value += 1;
+		}
+	} else {
+		return true;
 	}
 }
 
 function checkForMine(x, y, playerOne) {
 	console.log(playerOne);
-	x = parseInt(x);
-	y = parseInt(y);
+	let size = playerOne.size;
+	//x = parseInt(x);
+	//y = parseInt(y);
 	if (playerOne.mineArr[x][y].status != 'open') {
 		if (playerOne.mineArr[x][y].value < 10) {
 			if (playerOne.mineArr[x][y].value > 0) {
@@ -265,22 +271,22 @@ function checkForMine(x, y, playerOne) {
 				if (checkArrayDownXIndex(x)) {
 					checkForMine(x-1, y, playerOne);
 				}
-				if (checkArrayUpXIndex(x, playerOne.size)) {
+				if (checkArrayUpXIndex(x, size)) {
 					checkForMine(x+1, y, playerOne);
 				}
 				if (checkArrayDownYIndex(y)) {
 					checkForMine(x, y-1, playerOne);
 				}
-				if (checkArrayUpYIndex(y, playerOne.size)) {
+				if (checkArrayUpYIndex(y, size)) {
 					checkForMine(x, y+1, playerOne);
 				} 
-				if (checkArrayUpXIndex(x, playerOne.size) && checkArrayUpYIndex(y, playerOne.size)) {
+				if (checkArrayUpXIndex(x, size) && checkArrayUpYIndex(y, size)) {
 					checkForMine(x+1, y+1, playerOne);
 				}
 				if (checkArrayDownXIndex(x) && checkArrayDownYIndex(y)) {
 					checkForMine(x-1, y-1, playerOne);	
 				}
-				if (checkArrayDownXIndex(x) && checkArrayUpYIndex(y, playerOne.size)) {
+				if (checkArrayDownXIndex(x) && checkArrayUpYIndex(y, size)) {
 					checkForMine(x-1, y+1, playerOne);
 				}
 				if (checkArrayUpXIndex(x, playerOne.size) && checkArrayDownYIndex(y)) {
@@ -291,6 +297,34 @@ function checkForMine(x, y, playerOne) {
 	} 
 }
 
+function yTooBig(y, size) {
+	if (y + 1 > size) {
+		return true;
+	}
+	return false;
+}
+
+function yTooSmall(y) {
+	if (y - 1 < 0) {
+		return true;
+	} 
+	return false;
+}
+
+function xTooBig(x, size) {
+	if (x + 1 > size) {
+		return true;
+	{
+	return false;
+}
+
+function xTooSmall(x) {
+	if (x - 1 < 0) {
+		return true;
+	{
+	return false;
+}
+
 function checkArrayDownXIndex(x) {
 	if (x > 0) {
 		return true;
@@ -298,7 +332,7 @@ function checkArrayDownXIndex(x) {
 	return false;
 }
 function checkArrayUpXIndex(x, size) {
-	if (x+1 < size - 1) {
+	if (x + 1 < size - 1) {
 		return true;
 	}
 	return false;
@@ -310,7 +344,7 @@ function checkArrayDownYIndex(y) {
 	return false;
 }
 function checkArrayUpYIndex(y, size) {
-	if (y+1 < size - 1) {
+	if (y + 1 < size - 1) {
 		return true;
 	}
 	return false;
