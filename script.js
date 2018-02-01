@@ -1,5 +1,3 @@
-//break out of bounds into its own function
-
 class Player {
 	constructor(name, playerScore, size, playerData, bestScore, password) {
 		this.name = name;
@@ -225,6 +223,7 @@ function populateMines(playerOne) {
 }
 
 function placeMine(x, y, size, playerOne) {
+	console.log(x, y);
 	if (playerOne.mineArr[x][y].value != 10) {
 		playerOne.mineArr[x][y].value = 10;
 		if (!xTooBig(x, size)) {
@@ -239,7 +238,7 @@ function placeMine(x, y, size, playerOne) {
 		if (!yTooSmall(y)) {
 			playerOne.mineArr[x][y-1].value += 1;
 		}
-		if (!xTooBig(x, size) && !yTooBig(y,Size)) {
+		if (!xTooBig(x, size) && !yTooBig(y, size)) {
 			playerOne.mineArr[x+1][y+1].value += 1;
 		}
 		if (!xTooSmall(x) && !yTooSmall(y)) {
@@ -257,10 +256,10 @@ function placeMine(x, y, size, playerOne) {
 }
 
 function checkForMine(x, y, playerOne) {
-	console.log(playerOne);
+	console.log(x,y);
 	let size = playerOne.size;
-	//x = parseInt(x);
-	//y = parseInt(y);
+	x = parseInt(x);
+	y = parseInt(y);
 	if (playerOne.mineArr[x][y].status != 'open') {
 		if (playerOne.mineArr[x][y].value < 10) {
 			if (playerOne.mineArr[x][y].value > 0) {
@@ -268,29 +267,29 @@ function checkForMine(x, y, playerOne) {
 				return;
 			} else {
 				playerOne.mineArr[x][y].status = 'open';
-				if (checkArrayDownXIndex(x)) {
-					checkForMine(x-1, y, playerOne);
+				if (!xTooSmall(x)) {
+					checkForMine((x-1), y, playerOne);
 				}
-				if (checkArrayUpXIndex(x, size)) {
-					checkForMine(x+1, y, playerOne);
+				if (!xTooBig(x, size)) {
+					checkForMine((x+1), y, playerOne);
 				}
-				if (checkArrayDownYIndex(y)) {
-					checkForMine(x, y-1, playerOne);
+				if (!yTooSmall(y)) {
+					checkForMine(x, (y-1), playerOne);
 				}
-				if (checkArrayUpYIndex(y, size)) {
-					checkForMine(x, y+1, playerOne);
+				if (!yTooBig(y, size)) {
+					checkForMine(x, (y+1), playerOne);
 				} 
-				if (checkArrayUpXIndex(x, size) && checkArrayUpYIndex(y, size)) {
-					checkForMine(x+1, y+1, playerOne);
+				if (!xTooBig(x, size) && !yTooBig(y, size)) {
+					checkForMine((x+1), y+1, playerOne);
 				}
-				if (checkArrayDownXIndex(x) && checkArrayDownYIndex(y)) {
-					checkForMine(x-1, y-1, playerOne);	
+				if (!xTooSmall(x) && !yTooSmall(y)) {
+					checkForMine((x-1), y-1, playerOne);	
 				}
-				if (checkArrayDownXIndex(x) && checkArrayUpYIndex(y, size)) {
-					checkForMine(x-1, y+1, playerOne);
+				if (!xTooSmall(x) && !yTooBig(y, size)) {
+					checkForMine((x-1), (y+1), playerOne);
 				}
-				if (checkArrayUpXIndex(x, playerOne.size) && checkArrayDownYIndex(y)) {
-					checkForMine(x+1, y-1, playerOne);
+				if (!xTooBig(x, playerOne.size) && !yTooSmall(y)) {
+					checkForMine((x+1), (y-1), playerOne);
 				}
 			}
 		}
@@ -298,34 +297,34 @@ function checkForMine(x, y, playerOne) {
 }
 
 function yTooBig(y, size) {
-	if (y + 1 > size) {
+	if ((y + 1) > (size - 1)) {
 		return true;
 	}
 	return false;
 }
 
 function yTooSmall(y) {
-	if (y - 1 < 0) {
+	if ((y - 1) < 0) {
 		return true;
 	} 
 	return false;
 }
 
 function xTooBig(x, size) {
-	if (x + 1 > size) {
+	if ((x + 1) > (size - 1)) {
 		return true;
-	{
+	}
 	return false;
 }
 
 function xTooSmall(x) {
-	if (x - 1 < 0) {
+	if ((x - 1) < 0) {
 		return true;
-	{
+	}
 	return false;
 }
 
-function checkArrayDownXIndex(x) {
+/*function checkArrayDownXIndex(x) {
 	if (x > 0) {
 		return true;
 	}
@@ -348,7 +347,7 @@ function checkArrayUpYIndex(y, size) {
 		return true;
 	}
 	return false;
-}
+}*/
 
 function endGame(playerOne) {
 	console.log("Final score: " + playerOne.score);
