@@ -2,3 +2,17 @@ img {
 	width: 2em;
 	height: 2em;
 }
+
+#game-board {
+	display: grid;
+	grid-template-columns: repeat(10, [col-start] 1fr);
+	grid-gap: 5px;
+}
+
+h1 {
+	font-family: 'Pacifico', cursive;
+}
+
+h3 {
+	font-family: 'Shadows Into Light', cursive;
+}
