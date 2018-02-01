@@ -168,6 +168,8 @@ function revealBoard(playerOne) {
 		for (let k = 0; k < playerOne.size; k++) {
 			if (playerOne.mineArr[i][k].value === 0) {
 				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_10.png');
+			} else if (playerOne.mineArr[i][k].value > 9) {
+				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_bomb.png')
 			} else {
 				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_' + playerOne.mineArr[i][k].value + '.png');
 			}
@@ -223,7 +225,6 @@ function populateMines(playerOne) {
 }
 
 function placeMine(x, y, size, playerOne) {
-	console.log(x, y);
 	if (playerOne.mineArr[x][y].value != 10) {
 		playerOne.mineArr[x][y].value = 10;
 		if (!xTooBig(x, size)) {
@@ -256,7 +257,6 @@ function placeMine(x, y, size, playerOne) {
 }
 
 function checkForMine(x, y, playerOne) {
-	console.log(x,y);
 	let size = playerOne.size;
 	x = parseInt(x);
 	y = parseInt(y);
@@ -324,31 +324,6 @@ function xTooSmall(x) {
 	return false;
 }
 
-/*function checkArrayDownXIndex(x) {
-	if (x > 0) {
-		return true;
-	}
-	return false;
-}
-function checkArrayUpXIndex(x, size) {
-	if (x + 1 < size - 1) {
-		return true;
-	}
-	return false;
-}
-function checkArrayDownYIndex(y) {
-	if (y > 0) {
-		return true;
-	}
-	return false;
-}
-function checkArrayUpYIndex(y, size) {
-	if (y + 1 < size - 1) {
-		return true;
-	}
-	return false;
-}*/
-
 function endGame(playerOne) {
 	console.log("Final score: " + playerOne.score);
 	if (playerOne.score > playerOne.bestScore) {
@@ -359,11 +334,11 @@ function endGame(playerOne) {
 		localStorage.setItem(playerOne.name, JSON.stringify(data));
 	}
 	revealBoard(playerOne);
-	alert("Final score " + playerOne.score);
-	cleanBoard();
+	setTimeout(function() {cleanBoard();}, 1000);
 }
 
 function cleanBoard() {
+	alert("Final score " + playerOne.score);
 	location = location;
 	gamePlay();
 }
