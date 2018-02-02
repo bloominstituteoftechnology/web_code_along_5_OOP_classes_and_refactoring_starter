@@ -15,6 +15,15 @@ document.getElementById('passPara').style.display = 'none';
 document.getElementById('repeatPara').style.display = 'none';
 document.getElementById('enterName').addEventListener('click', playerPass);
 document.getElementById('enterPass').addEventListener('click', setUp);
+document.getElementById('playAgain').addEventListener('click', playAgain);
+document.getElementById('quit').addEventListener('click', quit);
+let quitDiv = document.getElementById('quitPara');
+let quitImg = document.createElement('img');
+quitImg.setAttribute('src', 'images/Quitter.jpg');
+quitImg.style.height = "500px";
+quitImg.style.width = "500px";
+quitDiv.appendChild(quitImg);
+quitDiv.style.display = 'none';
 
 function playerPass() {
 	document.getElementById('namePara').style.display = 'none';
@@ -120,7 +129,7 @@ function addSquare(i, k, tr, playerOne) {
 	spaceElement.setAttribute('src', 'images/Minesweeper_0.png');
 	spaceElement.setAttribute('locX', i);
 	spaceElement.setAttribute('locY', k);
-	spaceElement.addEventListener('contextmenu', event => event.preventDefault());
+	//spaceElement.addEventListener('contextmenu', event => event.preventDefault());
 	spaceElement.addEventListener('mousedown', function() {clickFunction(event, playerOne)});
 	cell.appendChild(spaceElement);
 	return spaceElement;
@@ -343,14 +352,14 @@ function endGame(playerOne) {
 function cleanBoard() {
 	alert("Final score " + playerOne.score);
 	document.getElementById('repeatPara').style.display = 'block';
-	let playAgain = document.getElementById("playAgain").value.toLowerCase();
-	if (playAgain === 'y') {
-		playerOne.playerData = null;
-		data = null;
-		location = location;
-		gamePlay();
-	} else {
-		alert("You either entered 'n' or an incorrect answer...in either case, get outta my casino!");
-		location = location;
-	}
+}
+
+function playAgain() {
+	location = location;
+	playerOne.playerData = null;
+	data = null;
+}
+
+function quit() {
+	quitDiv.style.display = 'block';
 }

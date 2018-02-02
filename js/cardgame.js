@@ -12,6 +12,9 @@
 const suitArr = ["Clubs", "Diamonds", "Hearts", "Spades"];
 const rankArr = [2,3,4,5,6,7,8,9, "10", "Jack", "Queen", "King", "Ace"];
 
+document.getElementById('hit').addEventListener('click', hit);
+document.getElementById('stay').addEventListener('click', stay);
+
 class Deck {
  	constructor(numDecks) {
  		this.numDecks = numDecks;
@@ -123,9 +126,16 @@ class Hand {
  			}
  		}
 
- 		if (score > 21 && this.hand.includes("Ace") != -1) {
+ 		if (score > 21) {
+	 		for (let i = 0; i < this.hand.length; i++) {
+	 			if (this.hand[i].rank === "Ace") {
+	 				score -= 10;
+	 			}
+	 		}
+	 	}
+ 		/*if (score > 21 && this.hand.includes("Ace") != false) {
  			score -= 9;
- 		}
+ 		}*/
  		return score;
  	}
 }
@@ -197,20 +207,55 @@ class blackJack {
 
 game = new blackJack();
 game.buildHand();
-console.log("Player Hand ->", game.printPlayerHand());
-console.log("Computer Hand ->", game.printComputerHand());
+console.log(game.printPlayerHand());
+console.log(game.countPlayerScore());
+console.log(game.printComputerHand());
+console.log(game.countComputerScore());
 
-let playerScore = game.countPlayerScore();
-let computerScore = game.countComputerScore();
-console.log("Player blackJack ", game.playerHasBlackJack());
-console.log("Computer blackJack ", game.computerHasBlackJack());
-console.log("Player Score ->", playerScore, "Computer Score ->", computerScore);
-while (game.countPlayerScore() < 21) {
-	console.log()
-	console.log("Player Hand ->", game.printPlayerHand());
-	console.log("Computer Hand ->", game.printComputerHand());
+
+function hit() {
+	console.log("hit");
+	game.dealPlayer();
+	console.log("Player Hand -> ", game.printPlayerHand());
+	console.log("Player Score -> ", game.countPlayerScore());
+	if (game.countPlayerScore() > 21) {
+		alert("You busted! Game over...");
+		endGame();
+	}
 }
-console.log("Player Hand ->", game.printPlayerHand());
-console.log("Computer Hand ->", game.printComputerHand());
-console.log("Player Score ->", game.countPlayerScore(), "Computer Score ->", game.countComputerScore());
-console.log(game.countPlayerScore() < game.countComputerScore() ? "Computer wins!" : "Player Wins!");
+
+function stay() {
+	console.log("stay");
+	computerPlay();
+}
+
+function computerPlay() {
+	/*When the dealer has served every player, his face-down 
+	card is turned up. If the total is 17 or more, he must 
+	stand. If the total is 16 or under, he must take a card. 
+	He must continue to take cards until the total is 17 or more, 
+	at which point the dealer must stand. If the dealer has an ace, 
+	and counting it as 11 would bring his total to 17 or more (but 
+	not over 21), he must count the ace as 11 and stand. The 
+	dealer's decisions, then, are automatic on all plays, 
+	whereas the player always has the option of taking one or more cards.*/
+	console.log("This is the computer playing...");
+	while (game.countComputerScore() < 16) {
+		game.dealComputer();
+		console.log(game.printComputerHand());
+		console.log(game.countComputerScore());
+	}
+	endGame();
+}
+
+function endGame() {
+	playerScore = game.countPlayerScore();
+	computerScore = game.countComputerScore();
+	if (playerScore > 21) {
+		console.log("Better luck next time");
+	} else if (computerScore > 21) {
+		alert("Computer busted! You win!");
+	} else {
+		console.log(playerScore > computerScore ? "You win!" : "You loose!");
+	}
+}
