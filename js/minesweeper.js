@@ -19,11 +19,12 @@ document.getElementById('playAgain').addEventListener('click', playAgain);
 document.getElementById('quit').addEventListener('click', quit);
 let quitDiv = document.getElementById('quitPara');
 let quitImg = document.createElement('img');
-quitImg.setAttribute('src', 'images/Quitter.jpg');
-quitImg.style.height = "500px";
-quitImg.style.width = "500px";
+quitImg.className = 'imquitting';
+quitImg.setAttribute('src', 'images/MinesweeperImages/Quitter.jpg');
 quitDiv.appendChild(quitImg);
 quitDiv.style.display = 'none';
+
+
 
 function playerPass() {
 	document.getElementById('namePara').style.display = 'none';
@@ -126,7 +127,7 @@ function addSquare(i, k, tr, playerOne) {
 	let cell = tr.appendChild(document.createElement('td'));
 	let spaceElement = document.createElement('img');
 	spaceElement.setAttribute('data-id', playerOne.mineArr[i][k].value);
-	spaceElement.setAttribute('src', 'images/Minesweeper_0.png');
+	spaceElement.setAttribute('src', 'images/MinesweeperImages/Minesweeper_0.png');
 	spaceElement.setAttribute('locX', i);
 	spaceElement.setAttribute('locY', k);
 	//spaceElement.addEventListener('contextmenu', event => event.preventDefault());
@@ -141,7 +142,7 @@ function clickFunction(e, playerOne) {
 	if (!checkWin(playerOne)) {
 		if (e.which != 3) {
 			if (playerOne.mineArr[xLoc][yLoc].value > 9) {
-				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_bomb.png')
+				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_bomb.png')
 				endGame(playerOne);
 			}
 			console.log("Left Click");
@@ -149,7 +150,7 @@ function clickFunction(e, playerOne) {
 			updateBoard(playerOne);
 		} else if (e.which === 3) {
 			if (playerOne.mineArr[xLoc][yLoc].status != 'open'){
-				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/Minesweeper_flagged.png');
+				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperiIages/Minesweeper_flagged.png');
 			}
 			console.log("Right Click");
 		}
@@ -177,11 +178,11 @@ function revealBoard(playerOne) {
 	for (let i = 0; i < playerOne.size; i++) {
 		for (let k = 0; k < playerOne.size; k++) {
 			if (playerOne.mineArr[i][k].value === 0) {
-				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_10.png');
+				playerOne.elementArr[i][k].setAttribute('src', 'images/MinesweeperImages/Minesweeper_10.png');
 			} else if (playerOne.mineArr[i][k].value > 9) {
-				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_bomb.png')
+				playerOne.elementArr[i][k].setAttribute('src', 'images/MinesweeperImages/Minesweeper_bomb.png')
 			} else {
-				playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_' + playerOne.mineArr[i][k].value + '.png');
+				playerOne.elementArr[i][k].setAttribute('src', 'images/MinesweeperImages/Minesweeper_' + playerOne.mineArr[i][k].value + '.png');
 			}
 		}
 	}
@@ -196,10 +197,10 @@ function updateBoard(playerOne) {
 						if (playerOne.mineArr[i][k].value === 0) {
 							playerOne.score += 1;
 							playerOne.mineArr[i][k].counted = 1;
-							playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_10.png');
+							playerOne.elementArr[i][k].setAttribute('src', 'images/MinesweeperImages/Minesweeper_10.png');
 						} else {
 							playerOne.score += 1;
-							playerOne.elementArr[i][k].setAttribute('src', 'images/Minesweeper_' + playerOne.mineArr[i][k].value + '.png');
+							playerOne.elementArr[i][k].setAttribute('src', 'images/MinesweeperImages/Minesweeper_' + playerOne.mineArr[i][k].value + '.png');
 							playerOne.mineArr[i][k].counted = 1;
 						}
 					}
@@ -361,5 +362,8 @@ function playAgain() {
 }
 
 function quit() {
+	document.body.style.backgroundColor = "#000000";
+	document.getElementById('repeatPara').style.display = 'none';
+	document.getElementById('game-board').remove();
 	quitDiv.style.display = 'block';
 }

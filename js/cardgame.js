@@ -9,11 +9,17 @@
  ** Maybe have a prototype AI class that you can utilize
  ** ----------THINGS TO RESEARCH----------
  **/
-const suitArr = ["Clubs", "Diamonds", "Hearts", "Spades"];
+
+ //Card graphics from https://code.google.com/archive/p/vector-playing-cards/
+const suitArr = ["clubs", "diamonds", "hearts", "spades"];
 const rankArr = [2,3,4,5,6,7,8,9, "10", "Jack", "Queen", "King", "Ace"];
 
 document.getElementById('hit').addEventListener('click', hit);
 document.getElementById('stay').addEventListener('click', stay);
+let computerTop = document.getElementById('computerTop');
+let betMid = document.getElementById('betMid');
+let playerBottom = document.getElementById('playerBottom');
+let imageHeader = "images/CardGameImages/";
 
 class Deck {
  	constructor(numDecks) {
@@ -138,6 +144,24 @@ class Hand {
  		}*/
  		return score;
  	}
+
+ 	cleanBoard() {
+ 		while (playerBottom.firstChild) {
+ 			playerBottom.removeChild(playerBottom.firstChild);
+ 		}
+ 	}
+
+ 	displayHand() {
+ 		for (let i = 0; i < this.hand.length; i++) {
+ 			let rank = this.hand[i].rank;
+ 			let suit = this.hand[i].suit;
+ 			console.log(this.hand[i]);
+ 			let cardString = imageHeader + rank + "_of_" + suit + ".png";
+ 			let cardImg = document.createElement('img');
+ 			cardImg.setAttribute('src', cardString);
+ 			playerBottom.appendChild(cardImg);
+ 		}
+ 	}
 }
 
 class Card {
@@ -163,19 +187,41 @@ class blackJack {
 
  	dealPlayer() {
  		this.player.addCard();
- 		return (this.player.countBlackJackScore() <= 21);
+ 		this.player.cleanBoard();
+ 		this.player.displayHand();
  	}
 
  	dealComputer() {
   		this.computer.addCard();
-  		return (this.computer.countBlackJackScore() <= 21);
+  		this.computer.cleanBoard();
+  		this.computer.displayHand();
  	}
 
  	buildHand() {
  		for (let i = 0; i < 2; i++) {
- 			this.player.addCard();
+  			this.player.addCard();
  			this.computer.addCard();
  		}
+ 		this.player.displayHand();
+ 	}
+
+ 	addPlayerImage() {
+
+ 	}
+
+ 	addComputerImage() {
+ 		let cardString = imageHeader + "back.png"
+ 	}
+
+ 	flipCards() {
+		let computerArr = this.computer.returnCards();
+		let rank;
+		let suit;
+		for (let i = 0; i < computerArr.length; i++) {
+			rank = computerArr[i].rank;
+			suit = computerArr[i].suit;
+			let cardString = imageHeader + rank + "_of_" + suit + ".png";
+		} 		
  	}
 
  	countPlayerScore() {
@@ -207,10 +253,10 @@ class blackJack {
 
 game = new blackJack();
 game.buildHand();
-console.log(game.printPlayerHand());
+/*console.log(game.printPlayerHand());
 console.log(game.countPlayerScore());
 console.log(game.printComputerHand());
-console.log(game.countComputerScore());
+console.log(game.countComputerScore());*/
 
 
 function hit() {
@@ -249,6 +295,8 @@ function computerPlay() {
 }
 
 function endGame() {
+	document.getElementById('hit').removeEventListener('click', hit);
+	document.getElementById('stay').removeEventListener('click', stay);
 	playerScore = game.countPlayerScore();
 	computerScore = game.countComputerScore();
 	if (playerScore > 21) {

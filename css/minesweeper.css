@@ -40,6 +40,22 @@ button:hover {
 	color: white;
 }
 
-quitPara {
-	
+/* transform borrowed/adjusted from http://jsfiddle.net/9DGb2/3// */
+
+.imquitting {
+	height: 500px;
+	width: 750px;
+    background-color: yellow;
+    -webkit-transition: transform 1s ease-in-out;
+    -moz-transition: transform 1s ease-in-out;
+    transition: transform 1s ease-in-out;
+}
+
+.imquitting:hover {
+    -moz-transform: scale(2.05);
+    -webkit-transform: scale(2.05);
+    -o-transform: scale(2.05);
+    -ms-transform: scale(2.05);
+    -webkit-transform: scale(2.05);
+    transform: scale(2.05);
 }
