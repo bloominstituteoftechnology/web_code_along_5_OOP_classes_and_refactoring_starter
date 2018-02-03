@@ -1,17 +1,13 @@
-/** Make a set card class and a set deck class
- ** From there you can have a main class where
- ** the user can select the game they want to play
- ** and have the separate card games in separate
- ** classes that all utilize the card class and deck
- ** class...
+/* 
  ** Possibly have a separate class for AI behavior
  ** but that will change so much depending on the game.
  ** Maybe have a prototype AI class that you can utilize
  ** ----------THINGS TO RESEARCH----------
- **/
+ **
+ */
 
  //Card graphics from https://code.google.com/archive/p/vector-playing-cards/
-const suitArr = ["clubs", "diamonds", "hearts", "spades"];
+const suitArr = ["Clubs", "Diamonds", "Hearts", "Spades"];
 const rankArr = [2,3,4,5,6,7,8,9, "10", "Jack", "Queen", "King", "Ace"];
 
 document.getElementById('hit').addEventListener('click', hit);
@@ -19,7 +15,7 @@ document.getElementById('stay').addEventListener('click', stay);
 let computerTop = document.getElementById('computerTop');
 let betMid = document.getElementById('betMid');
 let playerBottom = document.getElementById('playerBottom');
-let imageHeader = "images/CardGameImages/";
+let imageHeader = "images/CardGameImages/PNG/";
 
 class Deck {
  	constructor(numDecks) {
@@ -151,7 +147,7 @@ class Hand {
  		}
  	}
 
- 	displayHand() {
+ 	displayPlayerHand() {
  		for (let i = 0; i < this.hand.length; i++) {
  			let rank = this.hand[i].rank;
  			let suit = this.hand[i].suit;
@@ -161,6 +157,19 @@ class Hand {
  			cardImg.setAttribute('src', cardString);
  			playerBottom.appendChild(cardImg);
  		}
+ 	}
+
+ 	displayComputerHand() {
+	 	for (let i = 0; i < this.hand.length; i++) { 		
+	 		let cardString = imageHeader + "red_back.png"
+	 		let cardImg = document.createElement('img');
+	 		cardImg.setAttribute('src', cardString);
+	 		computerTop.appendChild(cardImg);
+	 	}
+ 	}
+
+ 	addComputerImage() {
+ 		let cardString = imageHeader + "red_back.png"
  	}
 }
 
@@ -188,13 +197,13 @@ class blackJack {
  	dealPlayer() {
  		this.player.addCard();
  		this.player.cleanBoard();
- 		this.player.displayHand();
+ 		this.player.displayPlayerHand();
  	}
 
  	dealComputer() {
   		this.computer.addCard();
   		this.computer.cleanBoard();
-  		this.computer.displayHand();
+  		this.computer.displayComputerHand();
  	}
 
  	buildHand() {
@@ -202,15 +211,8 @@ class blackJack {
   			this.player.addCard();
  			this.computer.addCard();
  		}
- 		this.player.displayHand();
- 	}
-
- 	addPlayerImage() {
-
- 	}
-
- 	addComputerImage() {
- 		let cardString = imageHeader + "back.png"
+ 		this.player.displayPlayerHand();
+ 		this.computer.displayComputerHand();
  	}
 
  	flipCards() {
@@ -276,15 +278,6 @@ function stay() {
 }
 
 function computerPlay() {
-	/*When the dealer has served every player, his face-down 
-	card is turned up. If the total is 17 or more, he must 
-	stand. If the total is 16 or under, he must take a card. 
-	He must continue to take cards until the total is 17 or more, 
-	at which point the dealer must stand. If the dealer has an ace, 
-	and counting it as 11 would bring his total to 17 or more (but 
-	not over 21), he must count the ace as 11 and stand. The 
-	dealer's decisions, then, are automatic on all plays, 
-	whereas the player always has the option of taking one or more cards.*/
 	console.log("This is the computer playing...");
 	while (game.countComputerScore() < 16) {
 		game.dealComputer();

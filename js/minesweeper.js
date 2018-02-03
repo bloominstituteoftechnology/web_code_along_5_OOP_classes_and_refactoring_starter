@@ -24,8 +24,6 @@ quitImg.setAttribute('src', 'images/MinesweeperImages/Quitter.jpg');
 quitDiv.appendChild(quitImg);
 quitDiv.style.display = 'none';
 
-
-
 function playerPass() {
 	document.getElementById('namePara').style.display = 'none';
 	document.getElementById('passPara').style.display = 'block';
@@ -38,7 +36,7 @@ function setUp() {
 		playerName = document.getElementById("playerName").value.toLowerCase();
 		playerData = JSON.parse(localStorage.getItem(playerName));
 		//let boardSize = prompt("How big would you like the board?");
-		let boardSize = 20;
+		let boardSize = 10;
 
 		if (playerData === null) {
 			playerData = {"name": playerName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "password": password};
@@ -110,8 +108,9 @@ function createMineArr(playerOne) {
 function createBoard(playerOne) {
 	populateMines(playerOne);
 	let grid = document.createElement('table');
+	let gameBoard = document.getElementById('game-board');
 	grid.className = 'grid';
-	document.getElementById('game-board').appendChild(grid);
+	gameBoard.appendChild(grid);
 	let elementArr = new Object(playerOne.size);
 	for (let i = 0; i < playerOne.size; i++) {
 		let tr = grid.appendChild(document.createElement('tr'));
@@ -120,6 +119,7 @@ function createBoard(playerOne) {
 			elementArr[i][k] = addSquare(i, k, tr, playerOne);
 		}
 	}
+
 	playerOne.elementArr = elementArr;
 }
 
@@ -130,36 +130,45 @@ function addSquare(i, k, tr, playerOne) {
 	spaceElement.setAttribute('src', 'images/MinesweeperImages/Minesweeper_0.png');
 	spaceElement.setAttribute('locX', i);
 	spaceElement.setAttribute('locY', k);
-	//spaceElement.addEventListener('contextmenu', event => event.preventDefault());
-	spaceElement.addEventListener('mousedown', function() {clickFunction(event, playerOne)});
+	spaceElement.addEventListener('mouseup', function() {clickFunction(event, playerOne)});
 	cell.appendChild(spaceElement);
 	return spaceElement;
 }
 
+function rightClick(e, playerOne) {
+	document.getElementById('')
+	console.log(e.target.matches('img'));
+	if (e.target.matches('data-id *')) {
+		e.stopPropagation();
+		let xLoc = e.target.getAttribute('locX');
+		let yLoc = e.target.getAttribute('locY');
+		if (playerOne.mineArr[xLoc][yLoc].status != 'open') {
+			playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperiIages/Minesweeper_flagged.png');
+		}
+	}
+	console.log('Right Click');
+}
+
 function clickFunction(e, playerOne) {
+	console.log(e.which);
+	event.preventDefault();
 	let xLoc = e.target.getAttribute('locX');
 	let yLoc = e.target.getAttribute('locY');
+	console.log(xLoc, yLoc);
 	if (!checkWin(playerOne)) {
-		if (e.which != 3) {
 			if (playerOne.mineArr[xLoc][yLoc].value > 9) {
 				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_bomb.png')
 				endGame(playerOne);
+			} else {
+				checkForMine(xLoc, yLoc, playerOne);
+				updateBoard(playerOne);
 			}
-			console.log("Left Click");
-			checkForMine(xLoc, yLoc, playerOne);
-			updateBoard(playerOne);
-		} else if (e.which === 3) {
-			if (playerOne.mineArr[xLoc][yLoc].status != 'open'){
-				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperiIages/Minesweeper_flagged.png');
-			}
-			console.log("Right Click");
-		}
-		document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
 	} else {
 		alert("You won!!!! Adding fifty to your score!");
 		playerOne.score += 50;
 		endGame(playerOne);
 	}
+	document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
 }
 
 function checkWin(playerOne) {

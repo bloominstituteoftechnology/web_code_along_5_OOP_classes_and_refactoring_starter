@@ -9,7 +9,6 @@ img {
 
 #game-board {
 	display: grid;
-	/*grid-template-columns: repeat(10, [col-start] 1fr);*/
 	grid-gap: 5px;
 	align-content: center;
 }
