@@ -6,6 +6,7 @@
   <meta http-equiv='X-UA-Compatible' content='ie=edge' />
   <title>Casino</title>
   <link href="https://fonts.googleapis.com/css?family=Poiret+One|Shrikhand" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower|Josefin+Sans|Lobster" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/cardstyle.css">
 </head>
 <body>
@@ -13,13 +14,21 @@
 	<h1>Welcome to Casey's Palace</h1>
 	<h2>"A great place to lose money" - NYTimes</h2>
 	<h4>"The best game I've ever played" - my mom</h4>
+	<h2 id="winLoose"></h2>
+	
+	<div id=playAgain>
+		<h2 id="playPara">Wanna play again, chump?</h2>
+		<button id="playButt">Play?</button><button id="quitButt">Quit(ter)</button>
+	</div>
+
 	<div id = "playingBoard">
 		<div id = "computerTop"></div>
 		<div id = "betMid"></div>
 		<div id = "playerBottom"></div>
 		<div id = 'hitOrStay'>
-    	<button id="hit">Hit</button><button id="stay">Stay</button></div>
+    	<button id="hitButt">Hit</button><button id="stayButt">Stay</button></div>
     	<p id="bet">You wanna bet or something? <input type = "number" id = betNumber style="width: 50px"></p>
+    	<p id="dough"></p>
     	<button id="betButt">Betcha wanna bet</button>
   	</div>
   	<div id="bottomCardImages"></div>

@@ -47,6 +47,7 @@ button {
 
 #bet {
 	color: lightgrey;
+	font-family: 'Indie Flower', cursive;
 }
 
 #hitOrStay {
@@ -67,7 +68,7 @@ button {
 	position: relative;
 	top: 0;
 	left: 0;
-	box-shadow: 5px 5px 1px rgba(34,34,34,0.9);
+	box-shadow: 5px 5px 5px rgba(34,34,34,0.9);
 	border-radius: 8px;
 }
 
@@ -106,4 +107,21 @@ button {
 #playerBottom{
 	margin-left: auto;
 	margin-right: auto;
+}
+
+#dough {
+	color: white;
+	font-family: 'Josefin Sans', sans-serif;
+}
+
+#winLoose {
+	text-align: center;
+	color: white;
+	font-family: 'Lobster', cursive;
+}
+
+#playAgain {
+	text-align: center;
+	color: white;
+	font-family: 'Lobster', cursive;
 }

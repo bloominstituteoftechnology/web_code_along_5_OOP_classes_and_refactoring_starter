@@ -11,6 +11,7 @@
  //Small poker chip image from https://icons8.com/iconizer/files/Gamble/orig/Chips.png
 const suitArr = ["Clubs", "Diamonds", "Hearts", "Spades"];
 const rankArr = [2,3,4,5,6,7,8,9, "10", "Jack", "Queen", "King", "Ace"];
+
 const imageHeader = "images/CardGameImages/PNG/";
 const backgroundImage = document.createElement('img');
 const bottomCardOne = document.createElement('img');
@@ -21,18 +22,22 @@ const betTinyImage = document.createElement('img');
 const betSmallImage = document.createElement('img');
 const betBigImage = document.createElement('img');
 const betHugeImage = document.createElement('img');
-
+const moneyPara = document.getElementById('dough');
+const winLoosePara = document.getElementById('winLoose');
+const playAgain = document.getElementById('playAgain');
+const computerTop = document.getElementById('computerTop');
+const betMid = document.getElementById('betMid');
+const playerBottom = document.getElementById('playerBottom');
+const topScreen = document.getElementById('topCardImages');
+const bottomScreen = document.getElementById('bottomCardImages');
+playAgain.style.display = "none";
 
 function setUp() {
-	document.getElementById('hit').addEventListener('click', hit);
-	document.getElementById('stay').addEventListener('click', stay);
-	document.getElementById('bet').addEventListener('click', bet);
-
-	let computerTop = document.getElementById('computerTop');
-	let betMid = document.getElementById('betMid');
-	let playerBottom = document.getElementById('playerBottom');
-	let topScreen = document.getElementById('topCardImages');
-	let bottomScreen = document.getElementById('bottomCardImages');
+	document.getElementById('hitButt').addEventListener('click', hit);
+	document.getElementById('stayButt').addEventListener('click', stay);
+	document.getElementById('betButt').addEventListener('click', playerBet);
+	document.getElementById('playButt').addEventListener('click', play);
+	document.getElementById('quitButt').addEventListener('click', quit);
 
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
@@ -66,6 +71,24 @@ function setUp() {
 	betSmallImage.style.display = 'none';
 	betBigImage.style.display = 'none';
 	betHugeImage.style.display = 'none';
+
+	game = new blackJack();
+	game.cleanPlayerHand();
+	game.cleanComputerHand();
+	game.buildHand();
+	game.playerMoney(500);
+	game.updateMoneyDisplay();
+}
+
+function cleanUp() {
+	document.getElementById('hitButt').removeEventListener('click', hit);
+	document.getElementById('stayButt').removeEventListener('click', stay);
+	betTinyImage.style.display = 'none';
+	betSmallImage.style.display = 'none';
+	betBigImage.style.display = 'none';
+	betHugeImage.style.display = 'none';
+	backgroundImage.setAttribute('src', imageHeader + 'betting-circle.png');
+
 }
 
 class Deck {
@@ -251,8 +274,8 @@ class blackJack {
  	constructor() {
  		this.player = new Hand();
  		this.computer = new Hand();
- 		this.money;
- 		this.bet;
+ 		this.money = 0;
+ 		this.bet = 0;
  	}
 
  	printPlayerHand() {
@@ -261,6 +284,14 @@ class blackJack {
 
  	printComputerHand() {
  		return(this.computer.toString());
+ 	}
+
+ 	cleanPlayerHand() {
+ 		this.player.cleanPlayerBoard();
+ 	}
+
+ 	cleanComputerHand() {
+ 		this.computer.cleanComputerBoard();
  	}
 
  	dealPlayer() {
@@ -300,7 +331,7 @@ class blackJack {
 
  	playerHasBlackJack() {
  		let blackArr = this.player.returnCards();
- 		if (typeof blackArr[0] === 'string' && typeof blackArr[1] === 'string') {
+ 		if ((typeof blackArr[0].rank === 'string' && typeof blackArr[1].rank === 'string') && (blackArr[0].rank === 'Ace' || typeof blackArr[1].rank === 'Ace')) {
  			return true;
  		} else {
  			return false;
@@ -309,7 +340,7 @@ class blackJack {
 
  	computerHasBlackJack() {
  		let blackArr = this.computer.returnCards();
- 		if (typeof blackArr[0].rank === 'string' && typeof blackArr[1].rank === 'string') {
+ 		if ((typeof blackArr[0].rank === 'string' && typeof blackArr[1].rank === 'string') && (blackArr[0].rank === 'Ace' || typeof blackArr[1].rank === 'Ace')) {
  			return true;
  		} else {
  			return false;
@@ -321,28 +352,31 @@ class blackJack {
  	}
 
  	playerBet(bet) {
+ 		bet = parseInt(bet);
+ 		this.bet = parseInt(this.bet);
  		if (bet > this.money) {
  			alert("Come on, Charlie, we both know you don't have that kinda dough...");
  		}
  		else {
  			this.money -= bet;
  			this.bet += bet;
- 			if (bet > 5) {
+ 			console.log("This is the current bet ->" + bet, "This is the saved bet ->" + this.bet);
+ 			if (this.bet < 5) {
  				betTinyImage.style.display = 'block';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'none';
 				betHugeImage.style.display = 'none';
- 			} else if (bet > 10) {
+ 			} else if (this.bet < 10) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'block';
 				betBigImage.style.display = 'none';
 				betHugeImage.style.display = 'none';
- 			} else if (bet > 50) {
+ 			} else if (this.bet < 50) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'block';
 				betHugeImage.style.display = 'none';
- 			} else if (bet > 100) {
+ 			} else if (this.bet > 100) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'none';
@@ -350,22 +384,16 @@ class blackJack {
  			}
  		}
  	}
+
+ 	updateMoneyDisplay() {
+ 		dough.innerHTML = "Remaining Dough: " + this.money;
+ 	}
 }
 
-setUp();
-game = new blackJack();
-game.buildHand();
-game.playerMoney(500);
-
-if (game.playerHasBlackJack() || game.computerHasBlackJack()) {
-	console.log(game.playerHasBlackJack(), game.computerHasBlackJack());
-	game.flipCards();
-	endGame();
-}
-
-function bet() {
+function playerBet() {
 	bet = document.getElementById('betNumber').value;
 	game.playerBet(bet);
+	game.updateMoneyDisplay();
 }
 
 function hit() {
@@ -393,20 +421,36 @@ function computerPlay() {
 }
 
 function endGame() {
-	document.getElementById('hit').removeEventListener('click', hit);
-	document.getElementById('stay').removeEventListener('click', stay);
+	cleanUp();
 
 	playerScore = game.countPlayerScore();
 	computerScore = game.countComputerScore();
 	if (game.playerHasBlackJack()) {
-		console.log("YOU'RE IN THE MONEY");
+		winLoose.innerHTML = "YOU'RE IN THE MONEY";
 	} else if (game.computerHasBlackJack()) {
-		console.log("Woah, baby, looks like you're fresh outta luck...");
+		winLoose.innerHTML = "Woah, baby, looks like you're fresh outta luck...";
 	} else if (playerScore > 21) {
-		console.log("Better luck next time");
+		winLoose.innerHTML = "You busted...try not to be so greedy next time, eh?";
 	} else if (computerScore > 21) {
-		console.log("Computer busted! You win!");
+		winLoose.innerHTML = "Computer busted! You win!";
 	} else {
-		console.log(playerScore > computerScore ? "You win!" : "You loose!");
+		winLoose.innerHTML = playerScore > computerScore ? "You win!" : "You loose!";
+	}
+	playAgain.style.display = 'block';
+}
+
+function play() {
+	setUp();
+	console.log("playing...");
+	if (game.playerHasBlackJack() || game.computerHasBlackJack()) {
+		console.log(game.playerHasBlackJack(), game.computerHasBlackJack());
+		game.flipCards();
+		endGame();
 	}
 }
+
+function quit() {
+
+}
+
+play();
