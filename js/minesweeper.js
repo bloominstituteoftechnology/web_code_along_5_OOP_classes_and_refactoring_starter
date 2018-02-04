@@ -20,7 +20,7 @@ document.getElementById('quit').addEventListener('click', quit);
 let quitDiv = document.getElementById('quitPara');
 let quitImg = document.createElement('img');
 quitImg.className = 'imquitting';
-quitImg.setAttribute('src', 'images/MinesweeperImages/Quitter.jpg');
+quitImg.setAttribute('src', 'images/MinesweeperImages/imquitting.png');
 quitDiv.appendChild(quitImg);
 quitDiv.style.display = 'none';
 

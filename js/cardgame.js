@@ -7,15 +7,66 @@
  */
 
  //Card graphics from https://code.google.com/archive/p/vector-playing-cards/
+ //Betting background image from http://suptg.thisisnotatrueending.com/archive/18015714/images/1329697290100.png
+ //Small poker chip image from https://icons8.com/iconizer/files/Gamble/orig/Chips.png
 const suitArr = ["Clubs", "Diamonds", "Hearts", "Spades"];
 const rankArr = [2,3,4,5,6,7,8,9, "10", "Jack", "Queen", "King", "Ace"];
+const imageHeader = "images/CardGameImages/PNG/";
+const backgroundImage = document.createElement('img');
+const bottomCardOne = document.createElement('img');
+const bottomCardTwo = document.createElement('img');
+const bottomCardThree = document.createElement('img');
+const bottomCardFour = document.createElement('img');
+const betTinyImage = document.createElement('img');
+const betSmallImage = document.createElement('img');
+const betBigImage = document.createElement('img');
+const betHugeImage = document.createElement('img');
 
-document.getElementById('hit').addEventListener('click', hit);
-document.getElementById('stay').addEventListener('click', stay);
-let computerTop = document.getElementById('computerTop');
-let betMid = document.getElementById('betMid');
-let playerBottom = document.getElementById('playerBottom');
-let imageHeader = "images/CardGameImages/PNG/";
+
+function setUp() {
+	document.getElementById('hit').addEventListener('click', hit);
+	document.getElementById('stay').addEventListener('click', stay);
+	document.getElementById('bet').addEventListener('click', bet);
+
+	let computerTop = document.getElementById('computerTop');
+	let betMid = document.getElementById('betMid');
+	let playerBottom = document.getElementById('playerBottom');
+	let topScreen = document.getElementById('topCardImages');
+	let bottomScreen = document.getElementById('bottomCardImages');
+
+	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
+	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
+	bottomCardThree.setAttribute('src', imageHeader + 'honor_diamond.png');
+	bottomCardFour.setAttribute('src', imageHeader + 'honor_heart-14.png');
+	backgroundImage.setAttribute('src', imageHeader + 'betting-circle.png');
+	betHugeImage.setAttribute('src', imageHeader + 'big-bet.png');
+	betBigImage.setAttribute('src', imageHeader + 'poker-chips.png');
+	betSmallImage.setAttribute('src', imageHeader + 'Chips.png');
+	betTinyImage.setAttribute('src', imageHeader + 'small-bet.png');
+
+	betTinyImage.style.height = '50px';
+	betTinyImage.style.width = '50px';
+	backgroundImage.className = "circle-image";
+	betTinyImage.className = "bet-image";
+	betSmallImage.className = "bet-image";
+	betBigImage.className = "bet-image";
+	betHugeImage.className = "bet-image";
+
+	bottomScreen.appendChild(bottomCardOne);
+	bottomScreen.appendChild(bottomCardTwo);
+	betMid.appendChild(backgroundImage);
+	betMid.appendChild(betTinyImage);
+	betMid.appendChild(betSmallImage);
+	betMid.appendChild(betBigImage);
+	betMid.appendChild(betHugeImage);
+	topScreen.appendChild(bottomCardThree);
+	topScreen.appendChild(bottomCardFour);
+
+	betTinyImage.style.display = 'none';
+	betSmallImage.style.display = 'none';
+	betBigImage.style.display = 'none';
+	betHugeImage.style.display = 'none';
+}
 
 class Deck {
  	constructor(numDecks) {
@@ -135,23 +186,25 @@ class Hand {
 	 			}
 	 		}
 	 	}
- 		/*if (score > 21 && this.hand.includes("Ace") != false) {
- 			score -= 9;
- 		}*/
  		return score;
  	}
 
- 	cleanBoard() {
+ 	cleanPlayerBoard() {
  		while (playerBottom.firstChild) {
  			playerBottom.removeChild(playerBottom.firstChild);
  		}
  	}
 
- 	displayPlayerHand() {
+ 	cleanComputerBoard() {
+ 		while (computerTop.firstChild) {
+ 			computerTop.removeChild(computerTop.firstChild);
+ 		}
+ 	}
+
+ 	displayPlayerCards() {
  		for (let i = 0; i < this.hand.length; i++) {
  			let rank = this.hand[i].rank;
  			let suit = this.hand[i].suit;
- 			console.log(this.hand[i]);
  			let cardString = imageHeader + rank + "_of_" + suit + ".png";
  			let cardImg = document.createElement('img');
  			cardImg.setAttribute('src', cardString);
@@ -159,13 +212,27 @@ class Hand {
  		}
  	}
 
- 	displayComputerHand() {
-	 	for (let i = 0; i < this.hand.length; i++) { 		
-	 		let cardString = imageHeader + "red_back.png"
-	 		let cardImg = document.createElement('img');
-	 		cardImg.setAttribute('src', cardString);
-	 		computerTop.appendChild(cardImg);
-	 	}
+ 	displayComputerCards() {
+ 		for (let i = 0; i < this.hand.length; i++) {
+ 			let rank = this.hand[i].rank;
+ 			let suit = this.hand[i].suit;
+ 			let cardString = imageHeader + rank + "_of_" + suit + ".png";
+ 			let cardImg = document.createElement('img');
+ 			cardImg.setAttribute('src', cardString);
+ 			computerTop.appendChild(cardImg);
+ 		}
+ 	}
+
+ 	displayComputerHand() {	
+ 		let cardString = imageHeader + "red_back.png"
+ 		let cardImg = document.createElement('img');
+ 		cardImg.setAttribute('src', cardString);
+ 		computerTop.appendChild(cardImg);
+	 	let showComputerCard = document.createElement('img');
+	 	let rank = this.hand[0].rank;
+	 	let suit = this.hand[0].suit;
+	 	showComputerCard .setAttribute('src', imageHeader + rank + "_of_" + suit + ".png");
+	 	computerTop.appendChild(showComputerCard);
  	}
 
  	addComputerImage() {
@@ -184,6 +251,8 @@ class blackJack {
  	constructor() {
  		this.player = new Hand();
  		this.computer = new Hand();
+ 		this.money;
+ 		this.bet;
  	}
 
  	printPlayerHand() {
@@ -196,14 +265,14 @@ class blackJack {
 
  	dealPlayer() {
  		this.player.addCard();
- 		this.player.cleanBoard();
- 		this.player.displayPlayerHand();
+ 		this.player.cleanPlayerBoard();
+		this.player.displayPlayerCards();
  	}
 
  	dealComputer() {
   		this.computer.addCard();
-  		this.computer.cleanBoard();
-  		this.computer.displayComputerHand();
+  		this.computer.cleanComputerBoard();
+  		this.computer.displayComputerCards();
  	}
 
  	buildHand() {
@@ -211,19 +280,14 @@ class blackJack {
   			this.player.addCard();
  			this.computer.addCard();
  		}
- 		this.player.displayPlayerHand();
+
+ 		this.player.displayPlayerCards();
  		this.computer.displayComputerHand();
  	}
 
  	flipCards() {
-		let computerArr = this.computer.returnCards();
-		let rank;
-		let suit;
-		for (let i = 0; i < computerArr.length; i++) {
-			rank = computerArr[i].rank;
-			suit = computerArr[i].suit;
-			let cardString = imageHeader + rank + "_of_" + suit + ".png";
-		} 		
+ 		this.computer.cleanComputerBoard();
+ 		this.computer.displayComputerCards();
  	}
 
  	countPlayerScore() {
@@ -251,15 +315,58 @@ class blackJack {
  			return false;
  		}
  	}
+
+ 	playerMoney(money) {
+ 		this.money = money;
+ 	}
+
+ 	playerBet(bet) {
+ 		if (bet > this.money) {
+ 			alert("Come on, Charlie, we both know you don't have that kinda dough...");
+ 		}
+ 		else {
+ 			this.money -= bet;
+ 			this.bet += bet;
+ 			if (bet > 5) {
+ 				betTinyImage.style.display = 'block';
+				betSmallImage.style.display = 'none';
+				betBigImage.style.display = 'none';
+				betHugeImage.style.display = 'none';
+ 			} else if (bet > 10) {
+ 				betTinyImage.style.display = 'none';
+				betSmallImage.style.display = 'block';
+				betBigImage.style.display = 'none';
+				betHugeImage.style.display = 'none';
+ 			} else if (bet > 50) {
+ 				betTinyImage.style.display = 'none';
+				betSmallImage.style.display = 'none';
+				betBigImage.style.display = 'block';
+				betHugeImage.style.display = 'none';
+ 			} else if (bet > 100) {
+ 				betTinyImage.style.display = 'none';
+				betSmallImage.style.display = 'none';
+				betBigImage.style.display = 'none';
+				betHugeImage.style.display = 'block';
+ 			}
+ 		}
+ 	}
 }
 
+setUp();
 game = new blackJack();
 game.buildHand();
-/*console.log(game.printPlayerHand());
-console.log(game.countPlayerScore());
-console.log(game.printComputerHand());
-console.log(game.countComputerScore());*/
+game.playerMoney(500);
 
+if (game.playerHasBlackJack() || game.computerHasBlackJack()) {
+	console.log(game.playerHasBlackJack(), game.computerHasBlackJack());
+	game.flipCards();
+	endGame();
+}
+
+function bet() {
+	bet = document.getElementById('betNumber').value;
+	game.playerBet(bet);
+}
 
 function hit() {
 	console.log("hit");
@@ -267,7 +374,6 @@ function hit() {
 	console.log("Player Hand -> ", game.printPlayerHand());
 	console.log("Player Score -> ", game.countPlayerScore());
 	if (game.countPlayerScore() > 21) {
-		alert("You busted! Game over...");
 		endGame();
 	}
 }
@@ -279,10 +385,9 @@ function stay() {
 
 function computerPlay() {
 	console.log("This is the computer playing...");
+	game.flipCards();
 	while (game.countComputerScore() < 16) {
 		game.dealComputer();
-		console.log(game.printComputerHand());
-		console.log(game.countComputerScore());
 	}
 	endGame();
 }
@@ -290,12 +395,17 @@ function computerPlay() {
 function endGame() {
 	document.getElementById('hit').removeEventListener('click', hit);
 	document.getElementById('stay').removeEventListener('click', stay);
+
 	playerScore = game.countPlayerScore();
 	computerScore = game.countComputerScore();
-	if (playerScore > 21) {
+	if (game.playerHasBlackJack()) {
+		console.log("YOU'RE IN THE MONEY");
+	} else if (game.computerHasBlackJack()) {
+		console.log("Woah, baby, looks like you're fresh outta luck...");
+	} else if (playerScore > 21) {
 		console.log("Better luck next time");
 	} else if (computerScore > 21) {
-		alert("Computer busted! You win!");
+		console.log("Computer busted! You win!");
 	} else {
 		console.log(playerScore > computerScore ? "You win!" : "You loose!");
 	}

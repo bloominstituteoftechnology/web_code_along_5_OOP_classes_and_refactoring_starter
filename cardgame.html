@@ -5,9 +5,11 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0' />
   <meta http-equiv='X-UA-Compatible' content='ie=edge' />
   <title>Casino</title>
+  <link href="https://fonts.googleapis.com/css?family=Poiret+One|Shrikhand" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/cardstyle.css">
 </head>
 <body>
+	<div id="topCardImages"></div>
 	<h1>Welcome to Casey's Palace</h1>
 	<h2>"A great place to lose money" - NYTimes</h2>
 	<h4>"The best game I've ever played" - my mom</h4>
@@ -15,9 +17,12 @@
 		<div id = "computerTop"></div>
 		<div id = "betMid"></div>
 		<div id = "playerBottom"></div>
-	<div id = 'hitOrStay'>
-    	<button id="hit">Hit</button><button id="stay">Stay</button>
+		<div id = 'hitOrStay'>
+    	<button id="hit">Hit</button><button id="stay">Stay</button></div>
+    	<p id="bet">You wanna bet or something? <input type = "number" id = betNumber style="width: 50px"></p>
+    	<button id="betButt">Betcha wanna bet</button>
   	</div>
+  	<div id="bottomCardImages"></div>
 	<script src='./js/cardgame.js'></script>
 </body>
 </html>
