@@ -137,39 +137,37 @@ function addSquare(i, k, tr, playerOne) {
 }
 
 function rightClick(e, playerOne) {
-	document.getElementById('')
-	console.log(e.target.matches('img'));
-	if (e.target.matches('data-id *')) {
-		e.stopPropagation();
-		let xLoc = e.target.getAttribute('locX');
-		let yLoc = e.target.getAttribute('locY');
-		if (playerOne.mineArr[xLoc][yLoc].status != 'open') {
-			playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperiIages/Minesweeper_flagged.png');
-		}
+	let xLoc = e.target.getAttribute('locX');
+	let yLoc = e.target.getAttribute('locY');
+	if (playerOne.mineArr[xLoc][yLoc].status != 'open') {
+		playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_flagged.png');
 	}
+
 	console.log('Right Click');
 }
 
 function clickFunction(e, playerOne) {
 	console.log(e.which);
-	event.preventDefault();
-	let xLoc = e.target.getAttribute('locX');
-	let yLoc = e.target.getAttribute('locY');
-	console.log(xLoc, yLoc);
-	if (!checkWin(playerOne)) {
-			if (playerOne.mineArr[xLoc][yLoc].value > 9) {
-				playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_bomb.png')
-				endGame(playerOne);
-			} else {
-				checkForMine(xLoc, yLoc, playerOne);
-				updateBoard(playerOne);
-			}
-	} else {
-		alert("You won!!!! Adding fifty to your score!");
-		playerOne.score += 50;
-		endGame(playerOne);
+	if (e.which != 3) {
+		event.preventDefault();
+		let xLoc = e.target.getAttribute('locX');
+		let yLoc = e.target.getAttribute('locY');
+		console.log(xLoc, yLoc);
+		if (!checkWin(playerOne)) {
+				if (playerOne.mineArr[xLoc][yLoc].value > 9) {
+					playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_bomb.png')
+					endGame(playerOne);
+				} else {
+					checkForMine(xLoc, yLoc, playerOne);
+					updateBoard(playerOne);
+				}
+		} else {
+			alert("You won!!!! Adding fifty to your score!");
+			playerOne.score += 50;
+			endGame(playerOne);
+		}
+		document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
 	}
-	document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
 }
 
 function checkWin(playerOne) {

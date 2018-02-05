@@ -248,8 +248,8 @@ class Hand {
  		cardImg.setAttribute('src', cardString);
  		computerTop.appendChild(cardImg);
 	 	let showComputerCard = document.createElement('img');
-	 	let rank = this.hand[0].rank;
-	 	let suit = this.hand[0].suit;
+	 	let rank = this.hand[1].rank;
+	 	let suit = this.hand[1].suit;
 	 	showComputerCard .setAttribute('src', imageHeader + rank + "_of_" + suit + ".png");
 	 	computerTop.appendChild(showComputerCard);
  	}
@@ -327,8 +327,12 @@ class blackJack {
 
  	playerHasBlackJack() {
  		let blackArr = this.player.returnCards();
- 		if ((typeof blackArr[0].rank === 'string' && typeof blackArr[1].rank === 'string') && (blackArr[0].rank === 'Ace' || typeof blackArr[1].rank === 'Ace')) {
- 			return true;
+ 		if ((typeof blackArr[0].rank === "string" && typeof blackArr[1].rank === "string") && (blackArr[0].rank === "Ace" || blackArr[1].rank === "Ace")) {
+ 			if (this.player.countBlackJackScore() === 21) {
+ 				return true;
+ 			} else {
+ 				return false;
+ 			}
  		} else {
  			return false;
  		}
@@ -336,8 +340,12 @@ class blackJack {
 
  	computerHasBlackJack() {
  		let blackArr = this.computer.returnCards();
- 		if ((typeof blackArr[0].rank === 'string' && typeof blackArr[1].rank === 'string') && (blackArr[0].rank === 'Ace' || typeof blackArr[1].rank === 'Ace')) {
- 			return true;
+ 		if ((typeof blackArr[0].rank === "string" && typeof blackArr[1].rank === "string") && (blackArr[0].rank === "Ace" || blackArr[1].rank === "Ace")) {
+ 			if (this.computer.countBlackJackScore() === 21) {
+ 				return true;
+ 			} else {
+ 				return false;
+ 			}
  		} else {
  			return false;
  		}
@@ -462,8 +470,9 @@ function endGame() {
 function play() {
 	setUp();
 	if (game.playerHasBlackJack() || game.computerHasBlackJack()) {
+		console.log(game.playerHasBlackJack(), game.computerHasBlackJack());
 		game.flipCards();
-		endGame();
+		setTimeout(endGame, delay);
 	}
 }
 
