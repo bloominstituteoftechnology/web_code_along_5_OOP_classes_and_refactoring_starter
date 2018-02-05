@@ -289,13 +289,14 @@ class Hand {
 	}
 
 	fourOfAKind() {
-		let pairArr = this.hand.findPairs();
+		let pairArr = this.findPairs();
+		let returnBool = false;
 		pairArr.forEach(function(el) {
 			if (el === 4) {
-				return true;
+				returnBool = true;
 			}
 		});
-		return false;		
+		return returnBool;		
 	}
 
 	fullHouse() {
@@ -324,34 +325,36 @@ class Hand {
 	}
 
 	threeOfAKind() {
-		let pairArr = this.hand.findPairs();
+		let pairArr = this.findPairs();
+		let returnBool = false;
 		pairArr.forEach(function(el) {
 			if (el === 3) {
-				return true;
+				returnBool = true;
 			}
 		});
-		return false;
+		return returnBool;
 	}
 
 	twoPair() {
 		let count = 0;
-		let pairArr = this.hand.findPairs();
+		let pairArr = this.findPairs();
 		pairArr.forEach(function(el) {
 			if (el === 2) {
 				count++;
 			}
 		});
-		return (count === 2);
+		return (count === 4);
 	}
 
 	onePair() {
-		let pairArr = this.hand.findPairs();
+		let returnBool = false;
+		let pairArr = this.findPairs();
 		pairArr.forEach(function(el) {
-			if (el === 1) {
-				return true;
+			if (el === 2) {
+				returnBool = true;
 			}
 		});
-		return false;
+		return returnBool;
 	}
 
 	highCard() {
@@ -369,15 +372,13 @@ class Hand {
 
 	findPairs() {
 		let handArr = this.getValueOfHand(this.hand);
-		console.log(handArr);
-		let returnArr = [];
-		let count = 1;
+		let returnArr = [0,0,0,0,0];
+		//let count = 1;
 		for (let i = 0; i < handArr.length; i++) {
-			if (handArr[i] === handArr[i+1]) {
-				count++;
-			} else {
-				returnArr.push(count);
-				count = 1;
+			for (let j = 0; j < handArr.length; j++) {
+				if (handArr[i] === handArr[j]) {
+					returnArr[i]++;
+				}
 			}
 		}
 		return returnArr;
@@ -494,16 +495,27 @@ class poker {
  	}
 
  	playerHandScore() {
-		return this.player.royalFlush();
-		return this.player.straightFlush();
-		return this.player.fourOfAKind();
-		return this.player.fullHouse();
-		return this.player.flush();
-		return this.player.straight();
-		return this.player.threeOfAKind();
-		return this.player.twoPair();
-		return this.player.onePair();
-		return this.player.highCard();
+		if(this.player.royalFlush()) {
+			console.log('royal flush');
+		} else if (this.player.straightFlush()) {
+			console.log('straight flush');
+		} else if(this.player.fourOfAKind()) {
+			console.log('four of a kind');
+		} else if (this.player.fullHouse()) {
+			console.log('full house');
+		} else if (this.player.flush()) {
+			console.log('flush');
+		} else if (this.player.straight()) {
+			console.log('straight');
+		} else if (this.player.threeOfAKind()) {
+			console.log('three of a kind');
+		} else if (this.player.twoPair()) {
+			console.log('two pair');
+		} else if (this.player.onePair()) {
+			console.log('one pair');
+		} else {
+			console.log(this.player.highCard());
+		}
 	}
 
 	computerHandScore() {
@@ -521,7 +533,6 @@ class poker {
 
 	sortPlayerCards() {
 		this.player.hand = this.player.sortCards(this.player.returnCards());
-		this.player.findPairs();
 	}
 
 	sortComputerCards() {
@@ -570,6 +581,8 @@ function play() {
 	game.sortPlayerCards();
 	game.sortComputerCards();
 	game.flipCards();
+	game.playerHandScore();
+	game.computerHandScore();
 }
 
 function quit() {
