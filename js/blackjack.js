@@ -37,6 +37,8 @@ document.getElementById('quitButt').addEventListener('click', quit);
 function setUp() {
 	playAgain.style.display = "none";
 	winLoose.innerHTML = "";
+	moneyLost.innerHTML = "";
+	moneyLeft.innerHTML = "";
 	playingBoard.style.display = 'block';
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
@@ -453,7 +455,7 @@ function endGame() {
 		moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
 	} else {
 		playAgain.style.display = 'block';
-		moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
+		moneyLeft.innerHTML = "You've got some dough left yet, here's how much you've got: $" + game.money;
 	}
 }
 

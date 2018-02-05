@@ -9,7 +9,7 @@ class Player {
 	}
 }
 
-let loopCounter = 0;
+//let loopCounter = 0;
 
 document.getElementById('passPara').style.display = 'none';
 document.getElementById('repeatPara').style.display = 'none';
@@ -36,7 +36,7 @@ function setUp() {
 		playerName = document.getElementById("playerName").value.toLowerCase();
 		playerData = JSON.parse(localStorage.getItem(playerName));
 		//let boardSize = prompt("How big would you like the board?");
-		let boardSize = 10;
+		let boardSize = 20;
 
 		if (playerData === null) {
 			playerData = {"name": playerName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "password": password};
@@ -130,6 +130,7 @@ function addSquare(i, k, tr, playerOne) {
 	spaceElement.setAttribute('src', 'images/MinesweeperImages/Minesweeper_0.png');
 	spaceElement.setAttribute('locX', i);
 	spaceElement.setAttribute('locY', k);
+	spaceElement.addEventListener('contextmenu', function() {event.preventDefault(); rightClick(event, playerOne)});
 	spaceElement.addEventListener('mouseup', function() {clickFunction(event, playerOne)});
 	cell.appendChild(spaceElement);
 	return spaceElement;

@@ -136,10 +136,6 @@ class Hand {
 		this.hand.push(this.deck.dealCard());
 	}
 
-	handScore() {
-
-	}
-
 	toString() {
 		let returnString = "";
 		for (let i = 0; i < this.hand.length; i++) {
@@ -154,10 +150,6 @@ class Hand {
 			returnArr.push(this.hand[i]);
 		}
 		return returnArr;
-	}
-
-	count pokerScore() {
-
 	}
 
  	cleanPlayerBoard() {
@@ -194,22 +186,68 @@ class Hand {
  		}
  	}
 
- 	displayComputerHand() {	
- 		let cardString = imageHeader + "red_back.png"
- 		let cardImg = document.createElement('img');
- 		cardImg.setAttribute('src', cardString);
- 		computerTop.appendChild(cardImg);
-	 	let showComputerCard = document.createElement('img');
-	 	let rank = this.hand[0].rank;
-	 	let suit = this.hand[0].suit;
-	 	showComputerCard .setAttribute('src', imageHeader + rank + "_of_" + suit + ".png");
-	 	computerTop.appendChild(showComputerCard);
+ 	displayHiddenComputerCards() {
+  		for (let i = 0; i < this.hand.length; i++) {
+ 			let cardString = imageHeader + "red_back.png";
+ 			let cardImg = document.createElement('img');
+ 			cardImg.setAttribute('src', cardString);
+ 			computerTop.appendChild(cardImg);
+ 		}
+ 	}
+
+
+
+//Basic merge sort that I adjusted to work with card values
+//(aka Jack's being eleven, Queens twleve, etc, etc)
+
+	sortCards() {
+ 		let length = this.hand.length;
+ 		if (length < 2) {
+ 			return arr;
+ 		}
+ 		let middle = Math.floor(length / 2);
+ 		let left = this.hand.slice(0, middle);
+ 		let right = this.hand.slice(middle);
+ 		return this.hand.merge(this.hand.sortCards(left), this.hand.sortCards(right));
+ 	}
+
+ 	merge(left, right) {
+ 		let sortHand = [];
+ 		leftLength = left.length;
+ 		rightLength = right.length;
+ 		l = 0;
+ 		r = 0;
+ 		while (l < leftLength && r < rightLength) {
+ 			let leftCard = valueOf(left[l]);
+ 			let rightCard = valueOf(right[r]);
+ 			if (leftCard < rightCard) {
+ 				sortHand.push(left[l++]);
+ 			} else {
+ 				sortHand.push(right[r++]);
+ 			}
+ 		}
+ 		return sortHand.concat(left.slice(l).concat(right.slice(r)));
+ 	}
+
+ 	valueOf(card) {
+ 		if (typeof card.rank === 'string') {
+ 			console.log(card.rank);
+ 			if (card.rank.includes("Jack")) {
+ 				return 11;
+ 			} else if (card.rank.includes("Queen")) {
+ 				return 12;
+ 			} else if (card.rank.includes("King")) {
+ 				return 13;
+ 			} else if (card.rank.includes("Ace")) {
+ 				return 14;
+ 			}
+ 		}
  	}
 
  	addComputerImage() {
  		let cardString = imageHeader + "red_back.png"
  	}
-}
+
 	royalFlush() {
 
 	}
@@ -249,6 +287,7 @@ class Hand {
 	highCard() {
 
 	}
+}
 
 class Card {
  	constructor(suit, rank) {
@@ -290,7 +329,7 @@ class poker {
  	dealComputer() {
   		this.computer.addCard();
   		this.computer.cleanComputerBoard();
-  		this.computer.displayComputerCards();
+  		this.computer.displayHiddenComputerCards();
  	}
 
  	buildHand() {
@@ -300,7 +339,7 @@ class poker {
  		}
 
  		this.player.displayPlayerCards();
- 		this.computer.displayComputerHand();
+ 		this.computer.displayHiddenComputerCards();
  	}
 
  	flipCards() {
@@ -359,7 +398,7 @@ class poker {
 
  	playerHandScore() {
 		return this.player.royalFlush();
-		return this.player.straightFlush();
+		return this.player.straight() && this.player.flush();
 		return this.player.fourOfAKind();
 		return this.player.fullHouse();
 		return this.player.flush();
@@ -372,7 +411,7 @@ class poker {
 
 	computerHandScore() {
 		return this.computer.royalFlush();
-		return this.computer.straightFlush();
+		return this.computer.flush() && this.computer.straight();
 		return this.computer.fourOfAKind();
 		return this.computer.fullHouse();
 		return this.computer.flush();
@@ -381,6 +420,14 @@ class poker {
 		return this.computer.twoPair();
 		return this.computer.onePair();
 		return this.computer.highCard();		
+	}
+
+	sortPlayerCards() {
+		return this.player.sortCards();
+	}
+
+	sortComputerCards() {
+		return this.computer.sortCards();
 	}
 }
 
@@ -422,6 +469,9 @@ function endGame() {
 
 function play() {
 	setUp();
+	game.sortPlayerCards();
+	game.dealPlayer();
+	game.dealComputer();
 }
 
 function quit() {
