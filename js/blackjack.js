@@ -1,11 +1,3 @@
-/* 
- ** Possibly have a separate class for AI behavior
- ** but that will change so much depending on the game.
- ** Maybe have a prototype AI class that you can utilize
- ** ----------THINGS TO RESEARCH----------
- **
- */
-
  //Card graphics from https://code.google.com/archive/p/vector-playing-cards/
  //Betting background image from http://suptg.thisisnotatrueending.com/archive/18015714/images/1329697290100.png
  //Small poker chip image from https://icons8.com/iconizer/files/Gamble/orig/Chips.png
@@ -30,15 +22,22 @@ const betMid = document.getElementById('betMid');
 const playerBottom = document.getElementById('playerBottom');
 const topScreen = document.getElementById('topCardImages');
 const bottomScreen = document.getElementById('bottomCardImages');
-playAgain.style.display = "none";
+const playingBoard = document.getElementById('playingBoard');
+const moneyLost = document.getElementById('moneyLost');
+const moneyLeft = document.getElementById('moneyLeft');
+const initialMoney = 500;
+const delay = 2000;
+
+document.getElementById('hitButt').addEventListener('click', hit);
+document.getElementById('stayButt').addEventListener('click', stay);
+document.getElementById('betButt').addEventListener('click', playerBet);
+document.getElementById('playButt').addEventListener('click', play);
+document.getElementById('quitButt').addEventListener('click', quit);
 
 function setUp() {
-	document.getElementById('hitButt').addEventListener('click', hit);
-	document.getElementById('stayButt').addEventListener('click', stay);
-	document.getElementById('betButt').addEventListener('click', playerBet);
-	document.getElementById('playButt').addEventListener('click', play);
-	document.getElementById('quitButt').addEventListener('click', quit);
-
+	playAgain.style.display = "none";
+	winLoose.innerHTML = "";
+	playingBoard.style.display = 'block';
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
 	bottomCardThree.setAttribute('src', imageHeader + 'honor_diamond.png');
@@ -76,19 +75,14 @@ function setUp() {
 	game.cleanPlayerHand();
 	game.cleanComputerHand();
 	game.buildHand();
-	game.playerMoney(500);
+	game.playerMoney(initialMoney);
 	game.updateMoneyDisplay();
 }
 
 function cleanUp() {
-	document.getElementById('hitButt').removeEventListener('click', hit);
-	document.getElementById('stayButt').removeEventListener('click', stay);
-	betTinyImage.style.display = 'none';
-	betSmallImage.style.display = 'none';
-	betBigImage.style.display = 'none';
-	betHugeImage.style.display = 'none';
-	backgroundImage.setAttribute('src', imageHeader + 'betting-circle.png');
-
+	playingBoard.style.display = 'none';
+	game.cleanPlayerHand();
+	game.cleanComputerHand();
 }
 
 class Deck {
@@ -360,7 +354,6 @@ class blackJack {
  		else {
  			this.money -= bet;
  			this.bet += bet;
- 			console.log("This is the current bet ->" + bet, "This is the saved bet ->" + this.bet);
  			if (this.bet < 5) {
  				betTinyImage.style.display = 'block';
 				betSmallImage.style.display = 'none';
@@ -397,27 +390,24 @@ function playerBet() {
 }
 
 function hit() {
-	console.log("hit");
 	game.dealPlayer();
 	console.log("Player Hand -> ", game.printPlayerHand());
 	console.log("Player Score -> ", game.countPlayerScore());
 	if (game.countPlayerScore() > 21) {
-		endGame();
+		setTimeout(endGame, delay);
 	}
 }
 
 function stay() {
-	console.log("stay");
 	computerPlay();
 }
 
 function computerPlay() {
-	console.log("This is the computer playing...");
 	game.flipCards();
 	while (game.countComputerScore() < 16) {
 		game.dealComputer();
 	}
-	endGame();
+	setTimeout(endGame, delay);
 }
 
 function endGame() {
@@ -427,23 +417,49 @@ function endGame() {
 	computerScore = game.countComputerScore();
 	if (game.playerHasBlackJack()) {
 		winLoose.innerHTML = "YOU'RE IN THE MONEY";
+		moneyLost.innerHTML = "You weren't supposed to get blackjack...congratulations, I guess. You won: $" + (game.bet + (game.bet * 2))
+		game.money = game.money + game.bet + (game.bet * 2)
 	} else if (game.computerHasBlackJack()) {
 		winLoose.innerHTML = "Woah, baby, looks like you're fresh outta luck...";
+		moneyLost.innerHTML = "Sorry, homie, you lost: $" + game.bet;
+		game.money = game.money;
 	} else if (playerScore > 21) {
 		winLoose.innerHTML = "You busted...try not to be so greedy next time, eh?";
+		moneyLost.innerHTML = "Sorry, homie, you lost: $" + game.bet;
+		game.money = game.money;
 	} else if (computerScore > 21) {
 		winLoose.innerHTML = "Computer busted! You win!";
+		moneyLost.innerHTML = "Guess the dealer got a bit excited...you won't see him around here again. Security!";
+		game.money = game.money + (game.bet * 2);
+	} else if (playerScore === computerScore) {
+		winLoose.innerHTML = "A tie...you're lucky, chump.";
+		moneyLost.innerHTML = "Here's your money back, don't forget to spend it all here!";
+		game.money = game.money + game.bet;
 	} else {
-		winLoose.innerHTML = playerScore > computerScore ? "You win!" : "You loose!";
+		winLoose.innerHTML = playerScore > computerScore ? "You win!" : "You lose!";
+		game.money = playerScore > computerScore ? game.money + (game.bet * 2) : game.money;
+		moneyLost.innerHTML = playerScore > computerScore? "We're watching you, card counter...you won: $" + (game.bet * 2) : "Sucker, there's a rube a minute in this business. You lost: $" + game.bet;
 	}
-	playAgain.style.display = 'block';
+
+	let loss = initialMoney - game.money;
+	if (loss < 0) {
+		loss = loss * -1;
+		
+	} else {
+		
+	}
+	if (game.money < 1) {
+		playAgain.style.display = 'none';
+		moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
+	} else {
+		playAgain.style.display = 'block';
+		moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
+	}
 }
 
 function play() {
 	setUp();
-	console.log("playing...");
 	if (game.playerHasBlackJack() || game.computerHasBlackJack()) {
-		console.log(game.playerHasBlackJack(), game.computerHasBlackJack());
 		game.flipCards();
 		endGame();
 	}
