@@ -38,10 +38,21 @@ button {
 	margin: 5px;
 }
 
+#spacer {
+	height: 25px;
+}
+
 #betButt {
 	background-color: white;
 	border-radius: 8px;
+}
 
+#changeCardsButt {
+	text-align: center;
+	background-color: white;
+	border-radius: 8px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #bet {
@@ -52,6 +63,7 @@ button {
 #hitOrStay {
 	text-align: center;
 }
+
 /*
 ** layering implementation courtesy of https://stackoverflow.com/questions/48474/how-do-i-position-one-image-on-top-of-another-in-html
 */
@@ -106,6 +118,8 @@ button {
 #playerBottom{
 	margin-left: auto;
 	margin-right: auto;
+	position: relative;
+	top: -2px;
 }
 
 #dough {
@@ -129,4 +143,12 @@ button {
 	text-align: center;
 	color: white;
 	font-family: 'Josefin Sans', sans-serif;
+}
+
+#betNumber {
+	width: 50px;
+}
+
+.selected {
+	box-shadow: 10px 10px .75px rgba(34,34,34,0.9);
 }

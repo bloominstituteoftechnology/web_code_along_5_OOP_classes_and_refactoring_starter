@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Casino</title>
+	<title>Casey's Palace</title>
+	<link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script|Rammetto+One|Gochi+Hand" rel="stylesheet">
+<!-- 	<link href="https://fonts.googleapis.com/css?family=Gochi+Hand" rel="stylesheet">
+ -->	<link rel="stylesheet" type="text/css" href="css/landingPageStyle.css">
 </head>
 <body>
-	<h1>Welcome to Casey's Palace</h1>
+
+	<h1 id='headH'>Welcome to Casey's Palace</h1>
 	<h2>"A great place to lose money" - NYTimes</h2>
 	<h4>"The best games I've ever played" - my Mom</h4>
 
-	<div id='BlackJack'></div>
-	<div id='Poker'></div>
-	<div id='Minesweeper'></div>
+	<div id = 'nameContainer'>
+    	<p id='namePara'>Name: <input type="text" id="playerName"></p>
+    	<button id="enterName">Enter</button>
+  	</div>
+
+	<div id = 'passContainer'>
+		<p>Password: <input type="password" id = "playerPassword1"></p>
+		<p>Confirm Password: <input type = "password" id = "playerPassword2"></p>
+		<button id="enterPass">Enter</button>
+	</div>
+
+	<div><p id='firstVisit'></p></div>
+	<div><span id="dot1" class="dot"></span></div>
+	<div><span id="dot2" class="dot"></span></div>
+	<div><span id="dot3" class="dot"></span></div>
+	<div><span id="dot4" class="dot"></span></div>
+	<div><span id="dot5" class="dot"></span></div>
+	<div><span id="dot6" class="dot"></span></div>
+
+	<div id='gameImages'>
+		<div id='BlackJack'><a href="blackjack.html"><img src="images/blackjackPhoto.png" class='images'/></a></div>
+		<div id='Poker'><a href="poker.html"><img src ="images/pokerPhoto.png" class='images'/></a></div>
+		<div id='Minesweeper'><a href="minesweeper.html"><img src="images/minesweeperPhoto.png" class='images'/></a></div>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src='./js/landingPage.js'></script>
 </body>
 </html>

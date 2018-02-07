@@ -25,7 +25,10 @@ const bottomScreen = document.getElementById('bottomCardImages');
 const playingBoard = document.getElementById('playingBoard');
 const moneyLost = document.getElementById('moneyLost');
 const moneyLeft = document.getElementById('moneyLeft');
-const initialMoney = 500;
+
+// const playerName = localStorage["currentName"];
+// const playerData = JSON.parse(localStorage.getItem(playerName));
+
 const delay = 2000;
 
 document.getElementById('hitButt').addEventListener('click', hit);
@@ -34,7 +37,15 @@ document.getElementById('betButt').addEventListener('click', playerBet);
 document.getElementById('playButt').addEventListener('click', play);
 document.getElementById('quitButt').addEventListener('click', quit);
 
-function setUp() {
+function setUp() {	
+	let playerName = localStorage["currentName"];
+	let playerData = JSON.parse(localStorage.getItem(playerName));
+
+	if (playerData.money === 0) {
+		winLoose.innerHTML = "Come on, chump. We both know you ain't got enough money to play here. Either check out Minesweeper or scram! Guards!";
+		setTimeout(quit, delay);
+	}
+
 	playAgain.style.display = "none";
 	winLoose.innerHTML = "";
 	moneyLost.innerHTML = "";
@@ -73,11 +84,11 @@ function setUp() {
 	betBigImage.style.display = 'none';
 	betHugeImage.style.display = 'none';
 
-	game = new blackJack();
+	game = new blackJack(playerData);
 	game.cleanPlayerHand();
 	game.cleanComputerHand();
 	game.buildHand();
-	game.playerMoney(initialMoney);
+	game.playerMoney(playerData.money);
 	game.updateMoneyDisplay();
 }
 
@@ -267,11 +278,12 @@ class Card {
 }
 
 class blackJack {
- 	constructor() {
+ 	constructor(playerData) {
  		this.player = new Hand();
  		this.computer = new Hand();
  		this.money = 0;
  		this.bet = 0;
+ 		this.playerData = playerData;
  	}
 
  	printPlayerHand() {
@@ -400,6 +412,11 @@ function playerBet() {
 }
 
 function hit() {
+	if (game.computerHasBlackJack()) {
+		game.flipCards();
+		setTimeout(endGame, delay);
+	}
+
 	game.dealPlayer();
 	console.log("Player Hand -> ", game.printPlayerHand());
 	console.log("Player Score -> ", game.countPlayerScore());
@@ -451,33 +468,30 @@ function endGame() {
 		moneyLost.innerHTML = playerScore > computerScore? "We're watching you, card counter...you won: $" + (game.bet * 2) : "Sucker, there's a rube a minute in this business. You lost: $" + game.bet;
 	}
 
-	let loss = initialMoney - game.money;
-	if (loss < 0) {
-		loss = loss * -1;
-		
-	} else {
-		
-	}
 	if (game.money < 1) {
 		playAgain.style.display = 'none';
 		moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
+
+		setTimeout(quit, delay);
 	} else {
 		playAgain.style.display = 'block';
 		moneyLeft.innerHTML = "You've got some dough left yet, here's how much you've got: $" + game.money;
 	}
+
+	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "playerData": game.playerData, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
+	localStorage.removeItem(game.playerData.name);
+	localStorage.setItem(game.playerData.name, JSON.stringify(data));
 }
 
 function play() {
 	setUp();
-	if (game.playerHasBlackJack() || game.computerHasBlackJack()) {
-		console.log(game.playerHasBlackJack(), game.computerHasBlackJack());
-		game.flipCards();
-		setTimeout(endGame, delay);
-	}
 }
 
 function quit() {
-
+	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "playerData": game.playerData, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
+	localStorage.removeItem(game.playerData.name);
+	localStorage.setItem(game.playerData.name, JSON.stringify(data));
+	window.location.href = "index.html";
 }
 
 play();

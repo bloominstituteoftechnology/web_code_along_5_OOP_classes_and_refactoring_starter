@@ -25,17 +25,31 @@ const bottomScreen = document.getElementById('bottomCardImages');
 const playingBoard = document.getElementById('playingBoard');
 const moneyLost = document.getElementById('moneyLost');
 const moneyLeft = document.getElementById('moneyLeft');
-const initialMoney = 500;
+
+const changeCards = document.getElementById('changeCards');
+let exchangeCards = [];
+
 const delay = 2000;
 
 document.getElementById('betButt').addEventListener('click', playerBet);
 document.getElementById('playButt').addEventListener('click', play);
 document.getElementById('quitButt').addEventListener('click', quit);
+document.getElementById('changeCardsButt').addEventListener('click', switchCards);
 
 function setUp() {
+	let playerName = localStorage["currentName"];
+	let playerData = JSON.parse(localStorage.getItem(playerName));
+
+	if (playerData.money === 0) {
+		winLoose.innerHTML = "Come on, chump. We both know you ain't got enough money to play here. Either check out Minesweeper or scram! Guards!";
+		setTimeout(quit, delay);
+	}
+
 	playAgain.style.display = "none";
+	changeCardsButt.style.display = "none";
+	playingBoard.style.display = "block";
 	winLoose.innerHTML = "";
-	playingBoard.style.display = 'block';
+
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
 	bottomCardThree.setAttribute('src', imageHeader + 'honor_diamond.png');
@@ -73,7 +87,7 @@ function setUp() {
 	game.cleanPlayerHand();
 	game.cleanComputerHand();
 	game.buildHand();
-	game.playerMoney(initialMoney);
+	game.playerMoney(playerData.money);
 	game.updateMoneyDisplay();
 }
 
@@ -136,6 +150,14 @@ class Hand {
 		this.hand.push(this.deck.dealCard());
 	}
 
+	removeCard(loc) {
+		this.hand.splice(loc, 1);
+	}
+
+	updatePlayerHand(loc) {
+		this.hand.splice(loc, 0, this.deck.dealCard());
+	}
+
 	toString() {
 		let returnString = "";
 		for (let i = 0; i < this.hand.length; i++) {
@@ -171,7 +193,11 @@ class Hand {
  			let cardString = imageHeader + rank + "_of_" + suit + ".png";
  			let cardImg = document.createElement('img');
  			cardImg.setAttribute('src', cardString);
+ 			cardImg.setAttribute('loc', i);
+ 			cardImg.id = i;
+ 			cardImg.addEventListener('click', selectCard);
  			playerBottom.appendChild(cardImg);
+ 			let div = document.createElement('div');
  		}
  	}
 
@@ -398,6 +424,7 @@ class poker {
  		this.computer = new Hand();
  		this.money = 0;
  		this.bet = 0;
+ 		this.cardExchange = 0;
  	}
 
  	printPlayerHand() {
@@ -471,17 +498,17 @@ class poker {
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'none';
 				betHugeImage.style.display = 'none';
- 			} else if (this.bet < 10) {
+ 			} else if (this.bet < 50) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'block';
 				betBigImage.style.display = 'none';
 				betHugeImage.style.display = 'none';
- 			} else if (this.bet < 50) {
+ 			} else if (this.bet < 100) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'block';
 				betHugeImage.style.display = 'none';
- 			} else if (this.bet > 100) {
+ 			} else if (this.bet >= 100) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'none';
@@ -495,40 +522,68 @@ class poker {
  	}
 
  	playerHandScore() {
+ 		let finalScore = 0;
 		if(this.player.royalFlush()) {
-			console.log('royal flush');
+			finalScore = 10;
 		} else if (this.player.straightFlush()) {
-			console.log('straight flush');
+			finalScore = 9;
 		} else if(this.player.fourOfAKind()) {
-			console.log('four of a kind');
+			finalScore = 8;
 		} else if (this.player.fullHouse()) {
-			console.log('full house');
+			finalScore = 7;
 		} else if (this.player.flush()) {
-			console.log('flush');
+			finalScore = 6;
 		} else if (this.player.straight()) {
-			console.log('straight');
+			finalScore = 5;
 		} else if (this.player.threeOfAKind()) {
-			console.log('three of a kind');
+			finalScore = 4;
 		} else if (this.player.twoPair()) {
-			console.log('two pair');
+			finalScore = 3;
 		} else if (this.player.onePair()) {
-			console.log('one pair');
+			finalScore = 2;
 		} else {
-			console.log(this.player.highCard());
+			finalScore = 1;
 		}
+		return finalScore;
 	}
 
 	computerHandScore() {
-		return this.computer.royalFlush();
-		return this.computer.straightFlush();
-		return this.computer.fourOfAKind();
-		return this.computer.fullHouse();
-		return this.computer.flush();
-		return this.computer.straight();
-		return this.computer.threeOfAKind();
-		return this.computer.twoPair();
-		return this.computer.onePair();
-		return this.computer.highCard();		
+ 		let finalScore = 0;
+		if(this.computer.royalFlush()) {
+			finalScore = 10;
+		} else if (this.computer.straightFlush()) {
+			finalScore = 9;
+		} else if(this.computer.fourOfAKind()) {
+			finalScore = 8;
+		} else if (this.computer.fullHouse()) {
+			finalScore = 7;
+		} else if (this.computer.flush()) {
+			finalScore = 6;
+		} else if (this.computer.straight()) {
+			finalScore = 5;
+		} else if (this.computer.threeOfAKind()) {
+			finalScore = 4;
+		} else if (this.computer.twoPair()) {
+			finalScore = 3;
+		} else if (this.computer.onePair()) {
+			finalScore = 2;
+		} else {
+			finalScore = 1;
+		}
+		return finalScore;
+	}
+
+	compareHands() {
+		let playerHand = this.player.returnCards();
+		let computerHand = this.computer.returnCards();
+		for (let i = playerHand.length-1; i >= 0; i--) {
+			if (this.player.getValueOfCard(playerHand[i]) > this.computer.getValueOfCard(computerHand[i])) {
+				return "Player"
+			} else if (this.player.getValueOfCard(computerHand[i]) > this.player.getValueOfCard(playerHand[i])) {
+				return "Computer";
+			}
+		}
+		return "Tie";
 	}
 
 	sortPlayerCards() {
@@ -538,12 +593,27 @@ class poker {
 	sortComputerCards() {
 		this.computer.hand = this.computer.sortCards(this.computer.returnCards());
 	}
+
+	changeCards(loc) {
+		this.player.updatePlayerHand(loc);
+ 		this.player.cleanPlayerBoard();
+		this.player.displayPlayerCards();
+	}
+
+	cardsSelected() {
+		this.cardExchange = parseInt(this.cardExchange);
+		this.cardExchange++;
+		return this.cardExchange;
+	}
 }
 
 function playerBet() {
 	bet = document.getElementById('betNumber').value;
-	game.playerBet(bet);
-	game.updateMoneyDisplay();
+	if (bet) {
+		document.getElementById('betNumber').value = "";
+		game.playerBet(bet);
+		game.updateMoneyDisplay();
+	}
 }
 
 function computerPlay() {
@@ -555,10 +625,23 @@ function computerPlay() {
 }
 
 function endGame() {
+	game.sortPlayerCards();
+	game.sortComputerCards();
+	
 	cleanUp();
 
-	playerScore = game.countPlayerScore();
-	computerScore = game.countComputerScore();
+	if (game.playerHandScore() === game.computerHandScore()) {
+		winString = game.compareHands();
+		if (winString === "Player") {
+			console.log("You won!!")
+		} else if (winString === "Computer") {
+			console.log("Computer won!!");
+		} else {
+			console.log("Ended in a tie...");
+		}
+	} else {
+		console.log(game.playerHandScore() > game.computerHandScore() ? "You win!" : "You loose!");
+	}
 
 	let loss = initialMoney - game.money;
 	if (loss < 0) {
@@ -576,17 +659,51 @@ function endGame() {
 	}
 }
 
-function play() {
-	setUp();
-	game.sortPlayerCards();
-	game.sortComputerCards();
-	game.flipCards();
-	game.playerHandScore();
-	game.computerHandScore();
+function switchCards(event) {
+	for (let i = 0; i < exchangeCards.length; i++) {
+		game.player.removeCard(exchangeCards[i]);
+		game.changeCards(exchangeCards[i]);
+	}
+	exchangeCards = [];
+	game.cardExchange = 0;
+	changeCardsButt.style.display = 'none';
+}
+
+function selectCard(event) {
+	cardLoc = parseInt(event.target.getAttribute('loc'));
+	let currentImage = document.getElementById(cardLoc);
+	if (!currentImage.classList.contains("selected")) {
+		currentImage.classList = "selected";
+		exchangeCards[game.cardExchange] = cardLoc;
+		game.cardsSelected();
+	
+		if (game.cardExchange < 4) {
+			changeCardsButt.style.display = 'block';
+		} else if (game.cardExchange > 3) {
+			for (let i = 0; i < exchangeCards.length; i++) {
+				document.getElementById(exchangeCards[i]).removeAttribute('class');
+			}
+			exchangeCards = [];
+			game.cardExchange = 0;
+			changeCardsButt.style.display = 'none';
+		}
+	} else {
+		currentImage.removeAttribute('class');
+		exchangeCards.pop();
+		game.cardExchange--;
+		if (game.cardExchange === 0) {
+			changeCardsButt.style.display = 'none';
+		}
+	}
+
 }
 
 function quit() {
 
+}
+
+function play() {
+	setUp();
 }
 
 play();

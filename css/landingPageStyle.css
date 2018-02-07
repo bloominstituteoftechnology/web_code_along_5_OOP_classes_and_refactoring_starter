@@ -1,0 +1,101 @@
+body {
+	background: url("../images/curtainImage.png") no-repeat center center fixed;
+	background-size: cover;
+	height: 100%;
+	max-width: 100%;
+	background-size: 100% 100%;
+	text-align: center;
+	background-color: black;
+}
+
+h1 {
+	position: absolute;
+	color: white;
+	top: 25%;
+	left: 22%;
+	animation-name: dropDown;
+    animation-duration: 5s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes dropDown {
+	0% {transform: translateX(60%);color: black;}
+	25% {transform: translateX(80%);color: white;}
+	50% {transform: translateX(100%);color: black;}
+	75% {transform: translateX(80%);color: white;}
+	100% {transform: translateX(60%);color: black;}
+}
+
+h2 {
+	color: white;
+	font-family: 'Rammetto One', cursive;
+}
+
+h4 {
+	color: white;
+	font-family: 'Nanum Pen Script', cursive;
+}
+
+button {
+	background-color: white;
+	border: 2px solid gray;
+	border-radius: 15px;
+	font-size: 16px;
+	box-shadow: 0 8px 16px rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	transition-duration: 0.4s;
+	cursor: pointer;
+}
+
+#nameContainer {
+	color: white;
+}
+
+#passContainer {
+	color: white;
+}
+
+#firstVisit {
+	color: white;
+	font-family: 'Gochi Hand', cursive;
+	font-size: 24px;
+}
+
+.images {
+	display: inline-block;
+	position: relative;
+	max-width: 20%;
+	max-height: 15%;
+	float: left;
+    margin: auto;
+    border-radius: 40%;
+    left: 20%;
+    top: 450px;
+    z-index: -1;
+    margin: 3%;
+}
+
+.images:hover {
+	box-shadow: 0px 0px 900px 0px rgba(255, 255, 255, 0.9);
+}
+
+div .dot {
+	height: 150px;
+	width: 150px;
+	background-color: gold;
+	border-radius: 50%;
+	position: fixed;
+	filter: blur(15px);
+	animation-name: moveBalls;
+    animation-duration: 4s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes moveBalls {
+	0% {opacity: .9; color: black;}
+	25% {opacity: .5; color: white;}
+	50% {opacity: 0; color: gold;}
+	75% {opacity: .5; color: white;}
+	100% {opacity: .9; color: black;}
+}

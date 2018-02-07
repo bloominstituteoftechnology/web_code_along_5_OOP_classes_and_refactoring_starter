@@ -1,96 +1,44 @@
 class Player {
-	constructor(name, playerScore, size, playerData, bestScore, password) {
+	constructor(name, playerScore, size, playerData, bestScore, money, password) {
 		this.name = name;
 		this.score = playerScore;
 		this.size = size;
 		this.data = playerData;
 		this.bestScore = bestScore;
-		this.password = password;
+		this.money = money;
+		this.password = password
 	}
 }
 
-//let loopCounter = 0;
-
-document.getElementById('passPara').style.display = 'none';
-document.getElementById('repeatPara').style.display = 'none';
-document.getElementById('enterName').addEventListener('click', playerPass);
-document.getElementById('enterPass').addEventListener('click', setUp);
 document.getElementById('playAgain').addEventListener('click', playAgain);
 document.getElementById('quit').addEventListener('click', quit);
-let quitDiv = document.getElementById('quitPara');
-let quitImg = document.createElement('img');
-quitImg.className = 'imquitting';
-quitImg.setAttribute('src', 'images/MinesweeperImages/imquitting.png');
-quitDiv.appendChild(quitImg);
-quitDiv.style.display = 'none';
-
-function playerPass() {
-	document.getElementById('namePara').style.display = 'none';
-	document.getElementById('passPara').style.display = 'block';
-}
+document.getElementById('repeatPara').style.display = 'none';
+setUp();
 
 function setUp() {	
-	if (setUpPass()) {
-		document.getElementById('passPara').style.display = 'none';
-		password = document.getElementById("playerPassword1").value;
-		playerName = document.getElementById("playerName").value.toLowerCase();
-		playerData = JSON.parse(localStorage.getItem(playerName));
-		//let boardSize = prompt("How big would you like the board?");
-		let boardSize = 20;
+	playerName = localStorage.getItem("currentName");
+	console.log(playerName, localStorage.getItem("currentName"));
+	playerData = JSON.parse(localStorage.getItem(playerName));
+	
+	let boardSize = parseInt(prompt("How big would you like the board?"));
+	console.log(playerData);
 
-		if (playerData === null) {
-			playerData = {"name": playerName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "password": password};
-			localStorage.setItem(playerName, JSON.stringify(playerData));
-			bestScore = 0;
-			playerOne = new Player(playerName, 0, boardSize, playerData, bestScore, password);
-			playerName = capitalizeName(playerName);
-			document.getElementById('scorePara').innerHTML = "Good luck, " + playerName;
-		} else {
-			bestScore = playerData.bestScore;
-			playerOne = new Player(playerData.playerName, 0, boardSize, playerData, bestScore, playerData.password);
-			playerName = capitalizeName(playerName);
-			document.getElementById('scorePara').innerHTML = "Welcome back, " + playerName + ". Previous best score: " + playerData.bestScore;
-		}
-		
-		createMineArr(playerOne);
-	}
+	if (playerData.bestScore === 0) {
+		playerOne = new Player(playerName, 0, boardSize, playerData, playerData.bestScore, playerData.money, playerData.password);
+		playerName = capitalizeName(playerName);
+		document.getElementById('scorePara').innerHTML = "Good luck, " + playerName;
+	} else {
+		bestScore = playerData.bestScore;
+		playerOne = new Player(playerName, 0, boardSize, playerData, playerData.bestScore, playerData.money, playerData.password);
+		playerName = capitalizeName(playerName);
+		document.getElementById('scorePara').innerHTML = "Welcome back, " + playerName + ". Previous best score: " + playerData.bestScore;
+	}	
+	console.log(playerOne);
+	createMineArr(playerOne);
 }
 
 function capitalizeName(name) {
-	return name.charAt(0).toUpperCase() + name.slice(1);
-}
-
-function setUpPass() {
-	let passOne = document.getElementById("playerPassword1").value;
-	let passTwo = document.getElementById("playerPassword2").value;
-	let playerName = document.getElementById("playerName").value.toLowerCase();
-	let playerData = JSON.parse(localStorage.getItem(playerName));
-	if (validate(playerName, passOne, passTwo, playerData)) {
-		return true;
-	}
-}
-
-function erasePassword() {
-	document.getElementById('playerPassword1').value = '';
-	document.getElementById('playerPassword2').value = '';
-}
-
-function validate(playerName, passOne, passTwo, playerData) {
-	if (passOne === passTwo) {
-		if (playerData === null) {
-			return true;
-		} else {
-			if (passOne === playerData.password) {
-				return true;		
-			} else {
-				alert("Incorrect password...");
-				return false;
-			}
-		}
-	} else {
-		alert("Your passwords don't match, please check your typing and try again!");
-		return false;
-	}
+    return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 function createMineArr(playerOne) {	
@@ -344,14 +292,17 @@ function xTooSmall(x) {
 }
 
 function endGame(playerOne) {
+	playerOne.money = playerOne.score;
 	console.log("Final score: " + playerOne.score, playerOne.bestScore);
 	if (playerOne.score > playerOne.bestScore) {
 		console.log(playerOne.score, playerOne.bestScore);
-		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.score, "password": playerOne.password};
-		console.log(data);
+		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.score, "money": playerOne.money, "password": playerOne.password};
+
+		localStorage.removeItem(playerOne.name);
 		localStorage.setItem(playerOne.name, JSON.stringify(data));
 	} else {
-		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.bestScore, "password": playerOne.password};
+		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.bestScore, "money": playerOne.money, "password": playerOne.password};
+		localStorage.removeItem(playerOne.name);
 		localStorage.setItem(playerOne.name, JSON.stringify(data));
 	}
 	revealBoard(playerOne);
@@ -365,13 +316,12 @@ function cleanBoard() {
 
 function playAgain() {
 	location = location;
-	playerOne.playerData = null;
-	data = null;
 }
 
 function quit() {
-	document.body.style.backgroundColor = "#000000";
-	document.getElementById('repeatPara').style.display = 'none';
-	document.getElementById('game-board').remove();
-	quitDiv.style.display = 'block';
+	window.location.href = "index.html";
+	// document.body.style.backgroundColor = "#000000";
+	// document.getElementById('repeatPara').style.display = 'none';
+	// document.getElementById('game-board').remove();
+	// quitDiv.style.display = 'block';
 }
