@@ -15,16 +15,15 @@ document.getElementById('quit').addEventListener('click', quit);
 setUp();
 
 function setUp() {
+	document.getElementById('repeatPara').style.display = 'none';
 	playerName = localStorage.getItem("currentName");
 	playerData = JSON.parse(localStorage.getItem(playerName));
-	localStorage.removeItem(playerName);
+
 	let boardSize = 0;
 
 	while (!boardSize) {
 		boardSize = parseInt(prompt("How big would you like the board?"));
 	}
-
-	console.log(playerData);
 
 	if (!playerData.bestScore) {
 		playerOne = new Player(playerName, 0, boardSize, 0, playerData.money, playerData.password);
@@ -34,7 +33,7 @@ function setUp() {
 		playerOne = new Player(playerName, 0, boardSize, playerData.bestScore, playerData.money, playerData.password);
 		document.getElementById('scorePara').innerHTML = "Welcome back, " + capitalizeName(playerName) + ". Previous best score: " + playerData.bestScore;
 	}	
-	console.log(playerOne);
+
 	createMineArr(playerOne);
 }
 
@@ -91,8 +90,6 @@ function rightClick(e, playerOne) {
 	if (playerOne.mineArr[xLoc][yLoc].status != 'open') {
 		playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_flagged.png');
 	}
-
-	console.log('Right Click');
 }
 
 function clickFunction(e, playerOne) {
@@ -291,7 +288,7 @@ function xTooSmall(x) {
 }
 
 function endGame(playerOne) {
-	playerOne.money = playerOne.score;
+	playerOne.money += playerOne.score;
 	localStorage.removeItem(playerOne.name);
 	
 	if (!playerOne.bestScore) {
@@ -299,10 +296,10 @@ function endGame(playerOne) {
 	}
 
 	if (playerOne.score > playerOne.bestScore) {
-		playerData = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "bestScore": playerOne.score, "money": playerOne.money, "password": playerOne.password};
+		playerData = {"name": playerOne.name, "playerScore": playerOne.score, "bestScore": playerOne.score, "money": playerOne.money, "password": playerOne.password};
 		localStorage.setItem(playerOne.name, JSON.stringify(playerData));
 	} else {
-		playerData = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "bestScore": playerOne.bestScore, "money": playerOne.money, "password": playerOne.password};
+		playerData = {"name": playerOne.name, "playerScore": playerOne.score, "bestScore": playerOne.bestScore, "money": playerOne.money, "password": playerOne.password};
 		localStorage.setItem(playerOne.name, JSON.stringify(playerData));
 	}
 
@@ -313,7 +310,7 @@ function endGame(playerOne) {
 function cleanBoard() {
 	alert("Final score " + playerOne.score);
 	document.getElementById('repeatPara').style.display = 'block';
-	document.getElementById('score').innerHTML = "";
+	document.getElementById('scorePara').innerHTML = "";
 }
 
 function playAgain() {

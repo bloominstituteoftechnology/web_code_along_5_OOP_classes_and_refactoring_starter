@@ -85,7 +85,7 @@ function setUp() {
 	document.getElementById('betContainer').style.display = 'block';
 	document.getElementById('hitOrStay').style.display = 'none';
 
-	game = new blackJack(playerData);
+	game = new blackJack(playerName);
 	game.cleanPlayerHand();
 	game.cleanComputerHand();
 	game.buildHand();
@@ -279,11 +279,12 @@ class Card {
 }
 
 class blackJack {
- 	constructor() {
+ 	constructor(name) {
  		this.player = new Hand();
  		this.computer = new Hand();
  		this.money = 0;
  		this.bet = 0;
+ 		this.playerName = name;
  	}
 
  	printPlayerHand() {
@@ -484,11 +485,12 @@ function endGame() {
 		playAgain.style.display = 'block';
 		moneyLeft.innerHTML = "You've got some dough left yet, here's how much you've got: $" + game.money;
 	}
+	
+	let playerData = JSON.parse(localStorage.getItem(game.playerName));
 
-	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
-	console.log(game.playerData);
-	localStorage.removeItem(game.playerData.name);
-	localStorage.setItem(game.playerData.name, JSON.stringify(data));
+	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.score, "money": game.money, "password": playerData.password};
+	localStorage.removeItem(playerData.name);
+	localStorage.setItem(playerData.name, JSON.stringify(data));
 }
 
 function play() {
@@ -496,10 +498,11 @@ function play() {
 }
 
 function quit() {
-	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
-	localStorage.removeItem(game.playerData.name);
-	console.log(game.playerData.name);
-	localStorage.setItem(game.playerData.name, JSON.stringify(data));
+	let playerData = JSON.parse(localStorage.getItem(game.playerName));
+
+	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.score, "money": game.money, "password": playerData.password};
+	localStorage.removeItem(playerData.name);
+	localStorage.setItem(playerData.name, JSON.stringify(data));
 	window.location.href = "index.html";
 }
 

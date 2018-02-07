@@ -347,7 +347,7 @@ class Hand {
 
 	flush() {
 		let correctSuit = this.hand[0].suit;
-		for (let i = 0; i < this.hand.length; i++) {
+		for (let i = 1; i < this.hand.length-1; i++) {
 			if (this.hand[i].suit != correctSuit) {
 				return false;
 			}
@@ -359,6 +359,9 @@ class Hand {
 
 	straight() {
 		let handArr = this.getValueOfHand(this.hand);
+		if (handArr.includes(2) && handArr.includes(3) && handArr.includes(4) && handArr.includes(5) && handArr.includes(14)) {
+			handArr[4] === 1;
+		}
 		for (let i = 0; i < handArr.length - 1; i++) {
 			if (handArr[i] != (handArr[i+1] + 1)) {
 				return false;
@@ -416,7 +419,7 @@ class Hand {
 	findPairs() {
 		let handArr = this.getValueOfHand(this.hand);
 		let returnArr = [0,0,0,0,0];
-		//let count = 1;
+
 		for (let i = 0; i < handArr.length; i++) {
 			for (let j = 0; j < handArr.length; j++) {
 				if (handArr[i] === handArr[j]) {
@@ -427,8 +430,49 @@ class Hand {
 		return returnArr;
 	}
 
+/* Assumption: the hand is sorted!
+//
+// Idea: check first for hand score. If 5, 6, 7, 9, 10, return the original hand 
+// (you need all five cards for straight, flush, full house, straight flush, 
+// royal flush). if 8 (four of a kind) or 3(two pair) simply switch the exception card and return 
+// the resulting hand. If 4 (three of a kind), switch the two exceptions and
+// return the resulting hand. If 2 (one pair) switch the three exceptions and
+// return the resulting hand. If one switch the three lowest valued cards and
+// return the resulting hand. This could probably be done more elegantly
+// but it's due tomorrow so I will revisit at a later date. Also I need to think
+// about checking the precentage chance to getting a higher hand (based on the cards
+// in the computers hand already) and seeing if that influences the card switching.
+*/
+
 	switchComputerCards() {
 
+	}
+
+	handScore() {
+		let finalScore = 0;
+		
+		if(this.hand.royalFlush()) {
+			finalScore = 10;
+		} else if (this.hand.straightFlush()) {
+			finalScore = 9;
+		} else if(this.hand.fourOfAKind()) {
+			finalScore = 8;
+		} else if (this.hand.fullHouse()) {
+			finalScore = 7;
+		} else if (this.hand.flush()) {
+			finalScore = 6;
+		} else if (this.hand.straight()) {
+			finalScore = 5;
+		} else if (this.hand.threeOfAKind()) {
+			finalScore = 4;
+		} else if (this.hand.twoPair()) {
+			finalScore = 3;
+		} else if (this.hand.onePair()) {
+			finalScore = 2;
+		} else {
+			finalScore = 1;
+		}
+		return finalScore;
 	}
 }
 
@@ -544,55 +588,11 @@ class poker {
  	}
 
  	playerHandScore() {
- 		let finalScore = 0;
-		if(this.player.royalFlush()) {
-			finalScore = 10;
-		} else if (this.player.straightFlush()) {
-			finalScore = 9;
-		} else if(this.player.fourOfAKind()) {
-			finalScore = 8;
-		} else if (this.player.fullHouse()) {
-			finalScore = 7;
-		} else if (this.player.flush()) {
-			finalScore = 6;
-		} else if (this.player.straight()) {
-			finalScore = 5;
-		} else if (this.player.threeOfAKind()) {
-			finalScore = 4;
-		} else if (this.player.twoPair()) {
-			finalScore = 3;
-		} else if (this.player.onePair()) {
-			finalScore = 2;
-		} else {
-			finalScore = 1;
-		}
-		return finalScore;
+ 		return this.player.handScore();
 	}
 
 	computerHandScore() {
- 		let finalScore = 0;
-		if(this.computer.royalFlush()) {
-			finalScore = 10;
-		} else if (this.computer.straightFlush()) {
-			finalScore = 9;
-		} else if(this.computer.fourOfAKind()) {
-			finalScore = 8;
-		} else if (this.computer.fullHouse()) {
-			finalScore = 7;
-		} else if (this.computer.flush()) {
-			finalScore = 6;
-		} else if (this.computer.straight()) {
-			finalScore = 5;
-		} else if (this.computer.threeOfAKind()) {
-			finalScore = 4;
-		} else if (this.computer.twoPair()) {
-			finalScore = 3;
-		} else if (this.computer.onePair()) {
-			finalScore = 2;
-		} else {
-			finalScore = 1;
-		}
-		return finalScore;
+ 		return this.computer.handScore();
 	}
 
 	compareHands() {
@@ -601,7 +601,7 @@ class poker {
 		for (let i = playerHand.length-1; i >= 0; i--) {
 			if (this.player.getValueOfCard(playerHand[i]) > this.computer.getValueOfCard(computerHand[i])) {
 				return "Player"
-			} else if (this.player.getValueOfCard(computerHand[i]) > this.player.getValueOfCard(playerHand[i])) {
+			} else if (this.computer.getValueOfCard(computerHand[i]) > this.player.getValueOfCard(playerHand[i])) {
 				return "Computer";
 			}
 		}
@@ -645,7 +645,7 @@ function playerBet() {
 }
 
 function computerPlay() {
-	flipCards();
+	//show computer cards here.
 	setTimeout(game.switchComputerCards(), delay);
 	setTimeout(endGame, delay);
 }
@@ -656,7 +656,7 @@ function endGame() {
 	
 	cleanUp();
 
-	if (game.playerHandScore() === game.computerHandScore()) {
+	if (game.player.handScore() === game.computer.handScore()) {
 		winString = game.compareHands();
 		if (winString === "Player") {
 			console.log("You won!!")

@@ -1,3 +1,6 @@
+let audio = new Audio('images/FunkyTown.mp3');
+audio.play();
+
 animateDiv();
 isLoggedIn();
 
