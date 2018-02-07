@@ -26,9 +26,6 @@ const playingBoard = document.getElementById('playingBoard');
 const moneyLost = document.getElementById('moneyLost');
 const moneyLeft = document.getElementById('moneyLeft');
 
-// const playerName = localStorage["currentName"];
-// const playerData = JSON.parse(localStorage.getItem(playerName));
-
 const delay = 2000;
 
 document.getElementById('hitButt').addEventListener('click', hit);
@@ -51,6 +48,7 @@ function setUp() {
 	moneyLost.innerHTML = "";
 	moneyLeft.innerHTML = "";
 	playingBoard.style.display = 'block';
+
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
 	bottomCardThree.setAttribute('src', imageHeader + 'honor_diamond.png');
@@ -83,6 +81,9 @@ function setUp() {
 	betSmallImage.style.display = 'none';
 	betBigImage.style.display = 'none';
 	betHugeImage.style.display = 'none';
+
+	document.getElementById('betContainer').style.display = 'block';
+	document.getElementById('hitOrStay').style.display = 'none';
 
 	game = new blackJack(playerData);
 	game.cleanPlayerHand();
@@ -278,12 +279,11 @@ class Card {
 }
 
 class blackJack {
- 	constructor(playerData) {
+ 	constructor() {
  		this.player = new Hand();
  		this.computer = new Hand();
  		this.money = 0;
  		this.bet = 0;
- 		this.playerData = playerData;
  	}
 
  	printPlayerHand() {
@@ -372,8 +372,8 @@ class blackJack {
  		this.bet = parseInt(this.bet);
  		if (bet > this.money) {
  			alert("Come on, Charlie, we both know you don't have that kinda dough...");
- 		}
- 		else {
+ 			return false;
+ 		} else {
  			this.money -= bet;
  			this.bet += bet;
  			if (this.bet < 5) {
@@ -398,6 +398,7 @@ class blackJack {
 				betHugeImage.style.display = 'block';
  			}
  		}
+ 		return true;
  	}
 
  	updateMoneyDisplay() {
@@ -407,8 +408,14 @@ class blackJack {
 
 function playerBet() {
 	bet = document.getElementById('betNumber').value;
-	game.playerBet(bet);
-	game.updateMoneyDisplay();
+	if (bet){
+		document.getElementById('betNumber').value = "";
+		if (game.playerBet(bet)) {
+			game.updateMoneyDisplay();
+			document.getElementById('betContainer').style.display = 'none';
+			document.getElementById('hitOrStay').style.display = 'block';
+		}
+	}
 }
 
 function hit() {
@@ -478,7 +485,8 @@ function endGame() {
 		moneyLeft.innerHTML = "You've got some dough left yet, here's how much you've got: $" + game.money;
 	}
 
-	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "playerData": game.playerData, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
+	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
+	console.log(game.playerData);
 	localStorage.removeItem(game.playerData.name);
 	localStorage.setItem(game.playerData.name, JSON.stringify(data));
 }
@@ -488,8 +496,9 @@ function play() {
 }
 
 function quit() {
-	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "playerData": game.playerData, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
+	let data = {"name": game.playerData.name, "playerScore": game.playerData.score, "size": game.playerData.size, "bestScore": game.playerData.score, "money": game.money, "password": game.playerData.password};
 	localStorage.removeItem(game.playerData.name);
+	console.log(game.playerData.name);
 	localStorage.setItem(game.playerData.name, JSON.stringify(data));
 	window.location.href = "index.html";
 }

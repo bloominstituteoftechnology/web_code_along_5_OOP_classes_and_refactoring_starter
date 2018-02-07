@@ -195,9 +195,25 @@ class Hand {
  			cardImg.setAttribute('src', cardString);
  			cardImg.setAttribute('loc', i);
  			cardImg.id = i;
- 			cardImg.addEventListener('click', selectCard);
+ 			// cardImg.addEventListener('click', selectCard);
  			playerBottom.appendChild(cardImg);
  			let div = document.createElement('div');
+ 		}
+ 	}
+
+ 	addCardEvents() {
+ 		for (let i = 0; i < this.hand.length; i++) {
+ 			let cardImg = document.getElementById(i);
+ 			console.log(cardImg);
+ 			cardImg.addEventListener('click', selectCard);
+ 		}
+ 	}
+
+ 	removeCardEvents() {
+ 		for (let i = 0; i < this.hand.length; i++) {
+ 			let cardImg = document.getElementById(i);
+ 			console.log(cardImg);
+ 			cardImg.removeEventListener('click', selectCard);
  		}
  	}
 
@@ -339,6 +355,7 @@ class Hand {
 
 		return true;
 	}
+///have to adjust aces changing from value '14' to value '1' if theres a 2,3,4,5 for straight / straight flush
 
 	straight() {
 		let handArr = this.getValueOfHand(this.hand);
@@ -409,6 +426,10 @@ class Hand {
 		}
 		return returnArr;
 	}
+
+	switchComputerCards() {
+
+	}
 }
 
 class Card {
@@ -425,6 +446,7 @@ class poker {
  		this.money = 0;
  		this.bet = 0;
  		this.cardExchange = 0;
+ 		this.betTimes = 0;
  	}
 
  	printPlayerHand() {
@@ -609,18 +631,22 @@ class poker {
 
 function playerBet() {
 	bet = document.getElementById('betNumber').value;
-	if (bet) {
-		document.getElementById('betNumber').value = "";
-		game.playerBet(bet);
-		game.updateMoneyDisplay();
+	document.getElementById('betNumber').value = "";
+	game.playerBet(bet);
+	game.updateMoneyDisplay();
+
+	document.getElementById('betContainer').style.display = 'none';
+	if (game.betTimes === 0) {
+		game.player.addCardEvents();
+		game.betTimes++;
+	} else {
+		computerPlay();
 	}
 }
 
 function computerPlay() {
-	game.flipCards();
-	while (game.countComputerScore() < 16) {
-		game.dealComputer();
-	}
+	flipCards();
+	setTimeout(game.switchComputerCards(), delay);
 	setTimeout(endGame, delay);
 }
 
@@ -667,6 +693,8 @@ function switchCards(event) {
 	exchangeCards = [];
 	game.cardExchange = 0;
 	changeCardsButt.style.display = 'none';
+	game.player.removeCardEvents();
+	document.getElementById('betContainer').style.display = 'block';
 }
 
 function selectCard(event) {
@@ -689,13 +717,17 @@ function selectCard(event) {
 		}
 	} else {
 		currentImage.removeAttribute('class');
-		exchangeCards.pop();
+		removeCard(exchangeCards, cardLoc);
 		game.cardExchange--;
 		if (game.cardExchange === 0) {
 			changeCardsButt.style.display = 'none';
 		}
 	}
+}
 
+function removeCard(exchangeCards, cardLoc) {
+	let indexOfCard = exchangeCards.indexOf(cardLoc);
+	exchangeCards.splice(indexOfCard, 1);
 }
 
 function quit() {

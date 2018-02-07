@@ -1,9 +1,9 @@
 body {
 	background: url("../images/curtainImage.png") no-repeat center center fixed;
-	background-size: cover;
-	height: 100%;
-	max-width: 100%;
-	background-size: 100% 100%;
+/*	background-size: cover;*/
+	height: 100vh;
+	width: 100vw;
+	background-size: 100;
 	text-align: center;
 	background-color: black;
 }
@@ -11,8 +11,10 @@ body {
 h1 {
 	position: absolute;
 	color: white;
-	top: 25%;
-	left: 22%;
+	height: 5vh;
+	width: 40vw;
+	top: 50%;
+	transform: translateY(-50%);
 	animation-name: dropDown;
     animation-duration: 5s;
     animation-direction: alternate;
@@ -71,7 +73,6 @@ button {
     border-radius: 40%;
     left: 20%;
     top: 450px;
-    z-index: -1;
     margin: 3%;
 }
 
@@ -90,6 +91,41 @@ div .dot {
     animation-duration: 4s;
     animation-direction: alternate;
     animation-iteration-count: infinite;
+    z-index: 2;
+}
+
+div #dot1 {
+	height: 300px;
+	width: 300px;
+	animation-duration: 8s;
+}
+
+div #dot2 {
+	height: 75px;
+	width: 75px;
+	animation-duration: 2s;
+}
+
+div #dot3 {
+	animation-duration: 4s;
+}
+
+div #dot4 {
+	height: 75px;
+	width: 75px;
+	animation-duration: 1s;
+}
+
+div #dot5 {
+	height: 250px;
+	width: 250px;
+	animation-duration: 6s;
+}
+
+div #dot6 {
+	height: 125px;
+	width: 125px;
+	animation-duration: 3s;
 }
 
 @keyframes moveBalls {

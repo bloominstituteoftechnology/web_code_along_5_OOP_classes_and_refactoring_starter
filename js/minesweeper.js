@@ -1,9 +1,8 @@
 class Player {
-	constructor(name, playerScore, size, playerData, bestScore, money, password) {
+	constructor(name, playerScore, size, bestScore, money, password) {
 		this.name = name;
 		this.score = playerScore;
 		this.size = size;
-		this.data = playerData;
 		this.bestScore = bestScore;
 		this.money = money;
 		this.password = password
@@ -12,26 +11,28 @@ class Player {
 
 document.getElementById('playAgain').addEventListener('click', playAgain);
 document.getElementById('quit').addEventListener('click', quit);
-document.getElementById('repeatPara').style.display = 'none';
+
 setUp();
 
-function setUp() {	
+function setUp() {
 	playerName = localStorage.getItem("currentName");
-	console.log(playerName, localStorage.getItem("currentName"));
 	playerData = JSON.parse(localStorage.getItem(playerName));
-	
-	let boardSize = parseInt(prompt("How big would you like the board?"));
+	localStorage.removeItem(playerName);
+	let boardSize = 0;
+
+	while (!boardSize) {
+		boardSize = parseInt(prompt("How big would you like the board?"));
+	}
+
 	console.log(playerData);
 
-	if (playerData.bestScore === 0) {
-		playerOne = new Player(playerName, 0, boardSize, playerData, playerData.bestScore, playerData.money, playerData.password);
-		playerName = capitalizeName(playerName);
-		document.getElementById('scorePara').innerHTML = "Good luck, " + playerName;
+	if (!playerData.bestScore) {
+		playerOne = new Player(playerName, 0, boardSize, 0, playerData.money, playerData.password);
+		document.getElementById('scorePara').innerHTML = "Good luck, " + capitalizeName(playerName);
 	} else {
 		bestScore = playerData.bestScore;
-		playerOne = new Player(playerName, 0, boardSize, playerData, playerData.bestScore, playerData.money, playerData.password);
-		playerName = capitalizeName(playerName);
-		document.getElementById('scorePara').innerHTML = "Welcome back, " + playerName + ". Previous best score: " + playerData.bestScore;
+		playerOne = new Player(playerName, 0, boardSize, playerData.bestScore, playerData.money, playerData.password);
+		document.getElementById('scorePara').innerHTML = "Welcome back, " + capitalizeName(playerName) + ". Previous best score: " + playerData.bestScore;
 	}	
 	console.log(playerOne);
 	createMineArr(playerOne);
@@ -95,12 +96,10 @@ function rightClick(e, playerOne) {
 }
 
 function clickFunction(e, playerOne) {
-	console.log(e.which);
 	if (e.which != 3) {
 		event.preventDefault();
 		let xLoc = e.target.getAttribute('locX');
 		let yLoc = e.target.getAttribute('locY');
-		console.log(xLoc, yLoc);
 		if (!checkWin(playerOne)) {
 				if (playerOne.mineArr[xLoc][yLoc].value > 9) {
 					playerOne.elementArr[xLoc][yLoc].setAttribute('src', 'images/MinesweeperImages/Minesweeper_bomb.png')
@@ -293,18 +292,20 @@ function xTooSmall(x) {
 
 function endGame(playerOne) {
 	playerOne.money = playerOne.score;
-	console.log("Final score: " + playerOne.score, playerOne.bestScore);
-	if (playerOne.score > playerOne.bestScore) {
-		console.log(playerOne.score, playerOne.bestScore);
-		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.score, "money": playerOne.money, "password": playerOne.password};
-
-		localStorage.removeItem(playerOne.name);
-		localStorage.setItem(playerOne.name, JSON.stringify(data));
-	} else {
-		let data = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "playerData": playerOne.data, "bestScore": playerOne.bestScore, "money": playerOne.money, "password": playerOne.password};
-		localStorage.removeItem(playerOne.name);
-		localStorage.setItem(playerOne.name, JSON.stringify(data));
+	localStorage.removeItem(playerOne.name);
+	
+	if (!playerOne.bestScore) {
+		playerOne.bestScore = 0;
 	}
+
+	if (playerOne.score > playerOne.bestScore) {
+		playerData = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "bestScore": playerOne.score, "money": playerOne.money, "password": playerOne.password};
+		localStorage.setItem(playerOne.name, JSON.stringify(playerData));
+	} else {
+		playerData = {"name": playerOne.name, "playerScore": playerOne.score, "size": playerOne.size, "bestScore": playerOne.bestScore, "money": playerOne.money, "password": playerOne.password};
+		localStorage.setItem(playerOne.name, JSON.stringify(playerData));
+	}
+
 	revealBoard(playerOne);
 	setTimeout(function() {cleanBoard();}, 3000);
 }
@@ -312,16 +313,18 @@ function endGame(playerOne) {
 function cleanBoard() {
 	alert("Final score " + playerOne.score);
 	document.getElementById('repeatPara').style.display = 'block';
+	document.getElementById('score').innerHTML = "";
 }
 
 function playAgain() {
-	location = location;
+	document.getElementById('repeatPara').style.display = 'none';
+	let div = document.getElementById('game-board');
+	while(div.firstChild) {
+    	div.removeChild(div.firstChild);
+	}
+	setUp();
 }
 
 function quit() {
 	window.location.href = "index.html";
-	// document.body.style.backgroundColor = "#000000";
-	// document.getElementById('repeatPara').style.display = 'none';
-	// document.getElementById('game-board').remove();
-	// quitDiv.style.display = 'block';
 }

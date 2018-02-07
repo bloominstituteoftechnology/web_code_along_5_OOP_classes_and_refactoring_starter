@@ -4,7 +4,8 @@ html, body {
 	background: url('../images/CardGameImages/PNG/cardTable.png') no-repeat center center fixed;
 	padding: 0;
 	margin: 0;
-	height: 100%;
+	height: 100vh;
+	width: 100vw;
 }
 
 h1 {
@@ -41,7 +42,6 @@ button {
 #betButt {
 	background-color: white;
 	border-radius: 8px;
-
 }
 
 #bet {

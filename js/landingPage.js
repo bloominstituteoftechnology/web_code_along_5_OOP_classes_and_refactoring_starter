@@ -1,9 +1,20 @@
 animateDiv();
+isLoggedIn();
 
-document.getElementById('gameImages').style.display = 'none';
-document.getElementById('passContainer').style.display = 'none';
-document.getElementById('enterName').addEventListener('click', playerPass);
-document.getElementById('enterPass').addEventListener('click', start);
+function isLoggedIn() {
+    let logIn = sessionStorage.getItem('logIn');
+    if (logIn) {
+        document.getElementById('firstVisit').innerHTML = "Back for more, eh? Good luck, chump.";
+        document.getElementById('nameContainer').style.display = 'none';
+        document.getElementById('passContainer').style.display = 'none';
+        displayGameImages();
+    } else {
+        document.getElementById('gameImages').style.display = 'none';
+        document.getElementById('passContainer').style.display = 'none';
+        document.getElementById('enterName').addEventListener('click', playerPass);
+        document.getElementById('enterPass').addEventListener('click', start);
+    }
+}
 
 function playerPass() {
     document.getElementById('nameContainer').style.display = 'none';
@@ -11,31 +22,37 @@ function playerPass() {
 }
 
 function start() {
-    let currentName = document.getElementById("playerName").value.toLowerCase();
+    let currentName = "";
+    let playerData = "";
+    
+    currentName = document.getElementById("playerName").value.toLowerCase();
     
     let passwordOne = document.getElementById("playerPassword1").value;
     let passwordTwo = document.getElementById("playerPassword2").value;
 
     localStorage.setItem("currentName", currentName);
-    let playerData = JSON.parse(localStorage.getItem(currentName));
+
+    playerData = JSON.parse(localStorage.getItem(currentName));
     console.log(playerData);
 
     if (playerData === null) {
-        playerData = {"name": currentName, "playerScore": 0, "size": 0, "playerData": null, "bestScore": 0, "money": 0, "password": passwordOne};
+        playerData = {"name": currentName, "playerScore": 0, "size": 0, "bestScore": 0, "money": 0, "password": passwordOne};
         localStorage.setItem(currentName, JSON.stringify(playerData));
 
+        sessionStorage.setItem('logIn', true);
         document.getElementById('passContainer').style.display = 'none';
-        document.getElementById('gameImages').style.display = 'block';
+        displayGameImages();    
         document.getElementById('firstVisit').innerHTML = "Ah, a first time visitor. Welcome, welcome. Your password has been saved for your next visit. You'd better start with minesweeper to earn some dough."
     } else {
         if (validate(currentName, passwordOne, passwordTwo, playerData)) {
+            sessionStorage.setItem('logIn', true);
             if (playerData.money > 0) {
-                document.getElementById('firstVisit').innerHTML = "Welcome back, welcome back. Continue this way for your money...";
+                document.getElementById('firstVisit').innerHTML = "Welcome back, welcome back. Continue this way for your money...Current money: " + playerData.money;
             } else {
                 document.getElementById('firstVisit').innerHTML = "Woah, woah, woah, looks like you had a bit too much fun last time...better head to minesweeper to make some dough.";
             }
             document.getElementById('passContainer').style.display = 'none';
-            document.getElementById('gameImages').style.display = 'block';
+            displayGameImages();
         } else {
             erasePassword();
         }
@@ -70,6 +87,10 @@ function validate(playerName, passOne, passTwo, playerData) {
     }
 }
 
+function displayGameImages() {
+    document.getElementById('gameImages').style.display = 'block';
+}
+
 //Borrowed from http://jsfiddle.net/Xw29r/15/
 function makeNewPosition(){
     let height = $(window).height() - 50;
@@ -90,19 +111,19 @@ function animateDiv(){
     let newPosition5 = makeNewPosition();
     let newPosition6 = makeNewPosition();
     
-    $('#dot1').animate({ top: newPosition1[0], left: newPosition1[1] }, 1000, function(){
+    $('#dot1').animate({ top: newPosition1[0], left: newPosition1[1] }, 4000, function(){
       animateDiv();        
     });
-    $('#dot2').animate({ top: newPosition2[0], left: newPosition2[1] }, 1000, function(){
+    $('#dot2').animate({ top: newPosition2[0], left: newPosition2[1] }, 7000, function(){
       animateDiv();        
     });
-    $('#dot3').animate({ top: newPosition3[0], left: newPosition3[1] }, 1000, function(){
+    $('#dot3').animate({ top: newPosition3[0], left: newPosition3[1] }, 500, function(){
       animateDiv();        
     });
     $('#dot4').animate({ top: newPosition4[0], left: newPosition4[1] }, 1000, function(){
       animateDiv();        
     });
-    $('#dot5').animate({ top: newPosition5[0], left: newPosition5[1] }, 1000, function(){
+    $('#dot5').animate({ top: newPosition5[0], left: newPosition5[1] }, 750, function(){
       animateDiv();        
     });
     $('#dot6').animate({ top: newPosition6[0], left: newPosition6[1] }, 1000, function(){
