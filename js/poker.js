@@ -51,6 +51,7 @@ function setUp() {
 	playingBoard.style.display = "block";
 	winLoosePara.innerHTML = "";
 	moneyLeft.innerHTML = "";
+	moneyLost.innerHTML = "";
 
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
