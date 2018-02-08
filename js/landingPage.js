@@ -1,7 +1,3 @@
-//Funky Town used from: https://www.youtube.com/watch?v=ax68rWI4Tuk
-let audio = new Audio('images/FunkyTown.mp3');
-audio.play();
-
 let blackJack = document.getElementById("blackJack");
 let poker = document.getElementById("poker")
 let minesweeper = document.getElementById("minesweeper");
