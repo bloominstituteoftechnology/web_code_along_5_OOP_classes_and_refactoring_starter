@@ -86,11 +86,10 @@ function setUp() {
 	betBigImage.style.display = 'none';
 	betHugeImage.style.display = 'none';
 
-	game = new poker(playerName);
+	game = new poker(playerName, playerData.money);
 	game.cleanPlayerHand();
 	game.cleanComputerHand();
 	game.buildHand();
-	game.playerMoney(playerData.money);
 	game.updateMoneyDisplay();
 }
 
@@ -482,10 +481,10 @@ class Card {
 }
 
 class poker {
- 	constructor(name) {
+ 	constructor(name, money) {
  		this.player = new Hand();
  		this.computer = new Hand();
- 		this.money = 0;
+ 		this.money = money;
  		this.bet = 0;
  		this.cardExchange = 0;
  		this.betTimes = 0;
