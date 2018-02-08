@@ -158,6 +158,7 @@ class Hand {
 		this.hand.splice(loc, 0, this.deck.dealCard());
 	}
 
+// For debugging
 	toString() {
 		let returnString = "";
 		for (let i = 0; i < this.hand.length; i++) {
@@ -166,6 +167,7 @@ class Hand {
 		return returnString;
 	}
 
+// Returns an array of the current cards, used for Debugging / comparing values.
 	returnCards() {
 		let returnArr = [];
 		for (let i = 0; i < this.hand.length; i++) {
@@ -195,7 +197,6 @@ class Hand {
  			cardImg.setAttribute('src', cardString);
  			cardImg.setAttribute('loc', i);
  			cardImg.id = i;
- 			// cardImg.addEventListener('click', selectCard);
  			playerBottom.appendChild(cardImg);
  			let div = document.createElement('div');
  		}
@@ -204,7 +205,6 @@ class Hand {
  	addCardEvents() {
  		for (let i = 0; i < this.hand.length; i++) {
  			let cardImg = document.getElementById(i);
- 			console.log(cardImg);
  			cardImg.addEventListener('click', selectCard);
  		}
  	}
@@ -212,11 +212,11 @@ class Hand {
  	removeCardEvents() {
  		for (let i = 0; i < this.hand.length; i++) {
  			let cardImg = document.getElementById(i);
- 			console.log(cardImg);
  			cardImg.removeEventListener('click', selectCard);
  		}
  	}
 
+// Show computer cards for reveal after the player is done betting / exchanging cards
  	displayComputerCards() {
  		for (let i = 0; i < this.hand.length; i++) {
  			let rank = this.hand[i].rank;
@@ -228,6 +228,7 @@ class Hand {
  		}
  	}
 
+// -------------------------------------------------------------------------------------Possible duplicate function-----------------------------------------------------------
  	displayHiddenComputerCards() {
   		for (let i = 0; i < this.hand.length; i++) {
  			let cardString = imageHeader + "red_back.png";
@@ -237,6 +238,11 @@ class Hand {
  		}
  	}
 
+// ----------------------------------Initial computer card images are all the backs of cards...Why are these two functions the same? Revisit and check----------------------------
+ 	
+ 	addComputerImage() {
+ 		let cardString = imageHeader + "red_back.png"
+ 	}
 
 
 //Basic merge sort that I adjusted to work with card values
@@ -295,16 +301,13 @@ class Hand {
  		return score;
  	}
 
+// Returns an array containing the values of each individual card
  	getValueOfHand(playerHand) {
  		let returnHand = [];
  		for (let i = 0; i < playerHand.length; i++) {
  			returnHand.push(this.getValueOfCard(playerHand[i]));
  		}
  		return returnHand;
- 	}
-
- 	addComputerImage() {
- 		let cardString = imageHeader + "red_back.png"
  	}
 
 	royalFlush() {
@@ -355,12 +358,12 @@ class Hand {
 
 		return true;
 	}
-///have to adjust aces changing from value '14' to value '1' if theres a 2,3,4,5 for straight / straight flush
 
 	straight() {
 		let handArr = this.getValueOfHand(this.hand);
+// Accounts for the potential presence of Aces in the hand (Aces can be valued at 14 or 1 to make a straight)
 		if (handArr.includes(2) && handArr.includes(3) && handArr.includes(4) && handArr.includes(5) && handArr.includes(14)) {
-			handArr[4] === 1;
+			handArr[4] = 1;
 		}
 		for (let i = 0; i < handArr.length - 1; i++) {
 			if (handArr[i] != (handArr[i+1] + 1)) {
@@ -416,6 +419,16 @@ class Hand {
 		return this.hand[highIndex];
 	}
 
+/*
+// Simple helper function to calculate the number of equal card values. First loop
+// starts at the beginning of the array of card values and iterates over the 
+// rest of the array checking if there is a match. If there is the returnArr
+// adds one to the ith value. At the end the ith index of returnArr will
+// contain n which is the number of cards that the ith index shares values
+// with. I feel like this could be made better than O(n^2) but that is something
+// that I will visit later when I have more time.
+*/
+
 	findPairs() {
 		let handArr = this.getValueOfHand(this.hand);
 		let returnArr = [0,0,0,0,0];
@@ -428,51 +441,6 @@ class Hand {
 			}
 		}
 		return returnArr;
-	}
-
-/* Assumption: the hand is sorted!
-//
-// Idea: check first for hand score. If 5, 6, 7, 9, 10, return the original hand 
-// (you need all five cards for straight, flush, full house, straight flush, 
-// royal flush). if 8 (four of a kind) or 3(two pair) simply switch the exception card and return 
-// the resulting hand. If 4 (three of a kind), switch the two exceptions and
-// return the resulting hand. If 2 (one pair) switch the three exceptions and
-// return the resulting hand. If one switch the three lowest valued cards and
-// return the resulting hand. This could probably be done more elegantly
-// but it's due tomorrow so I will revisit at a later date. Also I need to think
-// about checking the precentage chance to getting a higher hand (based on the cards
-// in the computers hand already) and seeing if that influences the card switching.
-*/
-
-	switchComputerCards() {
-
-	}
-
-	handScore() {
-		let finalScore = 0;
-		
-		if(this.hand.royalFlush()) {
-			finalScore = 10;
-		} else if (this.hand.straightFlush()) {
-			finalScore = 9;
-		} else if(this.hand.fourOfAKind()) {
-			finalScore = 8;
-		} else if (this.hand.fullHouse()) {
-			finalScore = 7;
-		} else if (this.hand.flush()) {
-			finalScore = 6;
-		} else if (this.hand.straight()) {
-			finalScore = 5;
-		} else if (this.hand.threeOfAKind()) {
-			finalScore = 4;
-		} else if (this.hand.twoPair()) {
-			finalScore = 3;
-		} else if (this.hand.onePair()) {
-			finalScore = 2;
-		} else {
-			finalScore = 1;
-		}
-		return finalScore;
 	}
 }
 
@@ -627,6 +595,143 @@ class poker {
 		this.cardExchange++;
 		return this.cardExchange;
 	}
+
+	/* Assumption: the hand is sorted!
+//
+// Idea: check first for hand score. If 5 or more (exception being score of 8 (four
+// of a kind) return the original hand (you need all five cards for straight, flush, 
+// full house, straight flush, royal flush.
+// If 3 (two pair) or 8 (four of a kind) simply switch the exception card and return 
+// the resulting hand (checking to make sure that the final card isn't an ace 
+// (you can't score a higher card value than an ace so why try?)
+// If 4 (three of a kind), switch the two exceptions and return the resulting hand. 
+// If 2 (one pair) switch the three exceptions and return the resulting hand. 
+// If one switch the three lowest valued cards and return the resulting hand. 
+// This could probably be done more elegantly but it's due tomorrow so I will 
+// revisit at a later date. Also I need to think about checking the precentage 
+// chance to getting a higher hand (based on the cards in the computers hand already) 
+// and seeing if that influences the card switching.
+*/
+
+	switchComputerCards() {
+		let sortedArrCards = this.computer.sortCards(this.computer.hand);
+		console.log(this.computer.hand, "----> initial hand");
+		let initialScore = this.handScore();
+		console.log(initialScore);
+		let index = 0;
+// Check for the initial don't exchange any cards cases
+		if (initialScore === 5 || initialScore === 6 || initialScore === 7 || initialScore === 8 || initialScore === 9 || initialScore === 10) {
+			return;
+// Chceck for three of a kind this can definitely be done better...
+		} else if (initialScore === 4) {
+			for (let i = 0; i < sortedArrCards.length-3; i++) {
+				if (sortedArrCards[i] === sortedArrCards[i+1] && sortedArrCards[i] === sortedArrCards[i+2])
+					index = i;
+			}
+			if (index === 0) {
+				this.computer.removeCard(3);
+				this.computer.removeCard(4);
+			} else if (index === 1) {
+				this.computer.removeCard(0);
+				this.computer.removeCard(4);
+			} else if (index === 2) {
+				this.computer.removeCard(0);
+				this.computer.removeCard(1);
+			}
+			this.computer.addCard();
+			this.computer.addCard();
+// Checking for both two pair and four of a kind. If there isn't an ace in the hand switch the card.
+		} else if (initialScore === 3 || initialScore === 8) {
+			console.log("Two pair or Four of a kind");
+			if (sortedArrCards.hand[0] === sortedArrCards.hand[1] && sortedArrCards.hand[1] === sortedArrCards.hand[2] && sortedArrCards.hand[2] === sortedArrCards.hand[3]) {
+				if (sortedArrCards.getValueOfCard(sortedArrCards.hand[4]) != 14) {
+					this.computer.removeCard(4);
+					this.computer.addCard();
+				}
+			} else {
+				if (sortedArrCards.getValueOfCard(sortedArrCards.hand[0]) != 14) {
+					this.computer.removeCard(0);
+					this.computer.addCard();
+				}
+			}
+// Checking for one pair. Find the index of the first card in the pair, use that to find the second index,
+// iterate through the hand array and take out every other card.
+		} else if (initialScore === 2) {
+			let handArr = this.computer.getValueOfHand(this.computer.returnCards());
+			let pairArr = this.computer.findPairs();
+			let index = pairArr.indexOf(2);
+			let searchValue = handArr[index];
+			handArr[index] = -1;
+			let nextIndex = handArr.indexOf(searchValue);
+			console.log(handArr, pairArr, "Arr's", index, searchValue, nextIndex, "index, searchValue, nextIndex 2 score");
+			for (let i = 0; i < handArr.length - 1; i++) {
+				if (i != index && i != nextIndex) {
+					this.computer.removeCard(i);
+					console.log(i, "iterations");
+				}
+			}
+
+			this.computer.addCard();
+			this.computer.addCard();
+			this.computer.addCard();
+			console.log(this.computer, "2 score final hand");
+// Check for one pair. Create an array of card values. Iterate through that array, pick out highest value, 
+// log the index, and change the value to -1 so it is no longer the largest value. 
+// Go back through the array of card values and log the next highest value. Iterate through the initial
+// array remove the values at every index not equal to either of the two max value
+// indicies.
+		} else if (initialScore === 1) {
+			let handArr = this.computer.getValueOfHand(this.computer.hand);
+			console.log(handArr, "----->HandArr");
+			let maxNumber = Math.max.apply(Math, handArr);
+			console.log("max number --->", maxNumber);
+			let indexOfMax = handArr.indexOf(maxNumber);
+			console.log("index of max number---->", indexOfMax);
+			handArr[indexOfMax] = -1;
+			maxNumber = Math.max.apply(Math, handArr);
+			console.log("max number --->", maxNumber);			
+			let indexOfMaxTwo = handArr.indexOf(maxNumber);
+			console.log("index of max number2---->", indexOfMaxTwo);
+			for (let i = 0; i < handArr.length-1; i++) {
+				if (i != indexOfMax && i != indexOfMaxTwo) {
+					this.computer.removeCard(i);
+					console.log(i, "iterations");
+				}
+			}
+			this.computer.addCard();
+			this.computer.addCard();
+			this.computer.addCard();
+
+			console.log(this.computer, handArr, maxNumber, "this.hand, handArr, maxNumber, 1 score")
+		}	
+	}
+
+	handScore() {
+		let finalScore = 0;
+		
+		if(this.computer.royalFlush()) {
+			finalScore = 10;
+		} else if (this.computer.straightFlush()) {
+			finalScore = 9;
+		} else if(this.computer.fourOfAKind()) {
+			finalScore = 8;
+		} else if (this.computer.fullHouse()) {
+			finalScore = 7;
+		} else if (this.computer.flush()) {
+			finalScore = 6;
+		} else if (this.computer.straight()) {
+			finalScore = 5;
+		} else if (this.computer.threeOfAKind()) {
+			finalScore = 4;
+		} else if (this.computer.twoPair()) {
+			finalScore = 3;
+		} else if (this.computer.onePair()) {
+			finalScore = 2;
+		} else {
+			finalScore = 1;
+		}
+		return finalScore;
+	}
 }
 
 function playerBet() {
@@ -645,44 +750,44 @@ function playerBet() {
 }
 
 function computerPlay() {
-	//show computer cards here.
+	game.sortComputerCards();
+
+	game.computer.cleanComputerBoard();
+	game.computer.displayComputerCards();
+
 	setTimeout(game.switchComputerCards(), delay);
+
 	setTimeout(endGame, delay);
 }
 
 function endGame() {
-	game.sortPlayerCards();
-	game.sortComputerCards();
+	game.computer.cleanComputerBoard();
+
+	game.computer.displayComputerCards();
+
+	// game.sortPlayerCards();
 	
-	cleanUp();
+	// cleanUp();
 
-	if (game.player.handScore() === game.computer.handScore()) {
-		winString = game.compareHands();
-		if (winString === "Player") {
-			console.log("You won!!")
-		} else if (winString === "Computer") {
-			console.log("Computer won!!");
-		} else {
-			console.log("Ended in a tie...");
-		}
-	} else {
-		console.log(game.playerHandScore() > game.computerHandScore() ? "You win!" : "You loose!");
-	}
-
-	let loss = initialMoney - game.money;
-	if (loss < 0) {
-		loss = loss * -1;
-		
-	} else {
-		
-	}
-	if (game.money < 1) {
-		playAgain.style.display = 'none';
-		moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
-	} else {
-		playAgain.style.display = 'block';
-		moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
-	}
+	// if (game.player.handScore() === game.computer.handScore()) {
+	// 	winString = game.compareHands();
+	// 	if (winString === "Player") {
+	// 		console.log("You won!!")
+	// 	} else if (winString === "Computer") {
+	// 		console.log("Computer won!!");
+	// 	} else {
+	// 		console.log("Ended in a tie...");
+	// 	}
+	// } else {
+	// 	console.log(game.playerHandScore() > game.computerHandScore() ? "You win!" : "You loose!");
+	// }
+	// if (game.money < 1) {
+	// 	playAgain.style.display = 'none';
+	// 	moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
+	// } else {
+	// 	playAgain.style.display = 'block';
+	// 	moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
+	// }
 }
 
 function switchCards(event) {
