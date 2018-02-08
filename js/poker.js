@@ -45,10 +45,12 @@ function setUp() {
 		setTimeout(quit, delay);
 	}
 
+	document.getElementById('betContainer').style.display = 'block';
 	playAgain.style.display = "none";
 	changeCardsButt.style.display = "none";
 	playingBoard.style.display = "block";
 	winLoose.innerHTML = "";
+	moneyLeft.innerHTML = "";
 
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
 	bottomCardTwo.setAttribute('src', imageHeader + 'honors_spade-14.png');
@@ -83,7 +85,7 @@ function setUp() {
 	betBigImage.style.display = 'none';
 	betHugeImage.style.display = 'none';
 
-	game = new poker();
+	game = new poker(playerName);
 	game.cleanPlayerHand();
 	game.cleanComputerHand();
 	game.buildHand();
@@ -442,6 +444,33 @@ class Hand {
 		}
 		return returnArr;
 	}
+
+	handScore() {
+		let finalScore = 0;
+		
+		if(this.royalFlush()) {
+			finalScore = 10;
+		} else if (this.straightFlush()) {
+			finalScore = 9;
+		} else if(this.fourOfAKind()) {
+			finalScore = 8;
+		} else if (this.fullHouse()) {
+			finalScore = 7;
+		} else if (this.flush()) {
+			finalScore = 6;
+		} else if (this.straight()) {
+			finalScore = 5;
+		} else if (this.threeOfAKind()) {
+			finalScore = 4;
+		} else if (this.twoPair()) {
+			finalScore = 3;
+		} else if (this.onePair()) {
+			finalScore = 2;
+		} else {
+			finalScore = 1;
+		}
+		return finalScore;
+	}
 }
 
 class Card {
@@ -452,13 +481,14 @@ class Card {
 }
 
 class poker {
- 	constructor() {
+ 	constructor(name) {
  		this.player = new Hand();
  		this.computer = new Hand();
  		this.money = 0;
  		this.bet = 0;
  		this.cardExchange = 0;
  		this.betTimes = 0;
+ 		this.playerName = name;
  	}
 
  	printPlayerHand() {
@@ -523,8 +553,11 @@ class poker {
  		this.bet = parseInt(this.bet);
  		if (bet > this.money) {
  			alert("Come on, Charlie, we both know you don't have that kinda dough...");
- 		}
- 		else {
+ 			return false;
+ 		} else if (!bet) {
+ 			alert("You've gotta bet something, come on, I'm not going to sit around all day for ya.");
+ 			return false;
+ 		} else {
  			this.money -= bet;
  			this.bet += bet;
  			if (this.bet < 5) {
@@ -549,6 +582,7 @@ class poker {
 				betHugeImage.style.display = 'block';
  			}
  		}
+ 		return true;
  	}
 
  	updateMoneyDisplay() {
@@ -596,7 +630,7 @@ class poker {
 		return this.cardExchange;
 	}
 
-	/* Assumption: the hand is sorted!
+/* Assumption: the hand is sorted!
 //
 // Idea: check first for hand score. If 5 or more (exception being score of 8 (four
 // of a kind) return the original hand (you need all five cards for straight, flush, 
@@ -619,6 +653,8 @@ class poker {
 		let initialScore = this.handScore();
 		console.log(initialScore);
 		let index = 0;
+		let numRemoved = 0;
+
 // Check for the initial don't exchange any cards cases
 		if (initialScore === 5 || initialScore === 6 || initialScore === 7 || initialScore === 8 || initialScore === 9 || initialScore === 10) {
 			return;
@@ -630,28 +666,44 @@ class poker {
 			}
 			if (index === 0) {
 				this.computer.removeCard(3);
+				numRemoved++;
 				this.computer.removeCard(4);
+				numRemoved++;
 			} else if (index === 1) {
 				this.computer.removeCard(0);
+				numRemoved++;
 				this.computer.removeCard(4);
+				numRemoved++;
 			} else if (index === 2) {
 				this.computer.removeCard(0);
+				numRemoved++;
 				this.computer.removeCard(1);
+				numRemoved++;
 			}
-			this.computer.addCard();
-			this.computer.addCard();
+
 // Checking for both two pair and four of a kind. If there isn't an ace in the hand switch the card.
-		} else if (initialScore === 3 || initialScore === 8) {
+		} else if (initialScore === 8) {
 			console.log("Two pair or Four of a kind");
 			if (sortedArrCards.hand[0] === sortedArrCards.hand[1] && sortedArrCards.hand[1] === sortedArrCards.hand[2] && sortedArrCards.hand[2] === sortedArrCards.hand[3]) {
 				if (sortedArrCards.getValueOfCard(sortedArrCards.hand[4]) != 14) {
 					this.computer.removeCard(4);
-					this.computer.addCard();
+					numRemoved++;
 				}
 			} else {
 				if (sortedArrCards.getValueOfCard(sortedArrCards.hand[0]) != 14) {
 					this.computer.removeCard(0);
-					this.computer.addCard();
+					numRemoved++;
+				}
+			}
+// Checking for two pair. Find the pairs and iterate through the array, taking out the one card
+// that isn't in a pair.
+		} else if (initialScore === 3) {
+			let pairArr = this.computer.findPairs();
+			for (let i = 0; i < pairArr.length-1; i++) {
+				if (pairArr[i] === 1) {
+					let index = (this.computer.returnCards).indexOf(pairArr[i]);
+					this.computer.removeCard(index);
+					numRemoved++;
 				}
 			}
 // Checking for one pair. Find the index of the first card in the pair, use that to find the second index,
@@ -668,41 +720,22 @@ class poker {
 				if (i != index && i != nextIndex) {
 					this.computer.removeCard(i);
 					console.log(i, "iterations");
+					numRemoved++;
 				}
 			}
 
-			this.computer.addCard();
-			this.computer.addCard();
-			this.computer.addCard();
 			console.log(this.computer, "2 score final hand");
-// Check for one pair. Create an array of card values. Iterate through that array, pick out highest value, 
-// log the index, and change the value to -1 so it is no longer the largest value. 
-// Go back through the array of card values and log the next highest value. Iterate through the initial
-// array remove the values at every index not equal to either of the two max value
-// indicies.
+// Well, spent thirty minutes working on an efficient algorithm for finding the highest value cards
+// ...and then I remembered that the cards are sorted...
 		} else if (initialScore === 1) {
-			let handArr = this.computer.getValueOfHand(this.computer.hand);
-			console.log(handArr, "----->HandArr");
-			let maxNumber = Math.max.apply(Math, handArr);
-			console.log("max number --->", maxNumber);
-			let indexOfMax = handArr.indexOf(maxNumber);
-			console.log("index of max number---->", indexOfMax);
-			handArr[indexOfMax] = -1;
-			maxNumber = Math.max.apply(Math, handArr);
-			console.log("max number --->", maxNumber);			
-			let indexOfMaxTwo = handArr.indexOf(maxNumber);
-			console.log("index of max number2---->", indexOfMaxTwo);
-			for (let i = 0; i < handArr.length-1; i++) {
-				if (i != indexOfMax && i != indexOfMaxTwo) {
-					this.computer.removeCard(i);
-					console.log(i, "iterations");
-				}
+			for (let i = 0; i < 3; i++) {
+				this.computer.removeCard(i);
+				numRemoved++;
 			}
+		}
+		winLoosePara.innerHTML = "Dealer exchanges " + numRemoved + " cards.";
+		for (let i = 0; i < numRemoved; i++) {
 			this.computer.addCard();
-			this.computer.addCard();
-			this.computer.addCard();
-
-			console.log(this.computer, handArr, maxNumber, "this.hand, handArr, maxNumber, 1 score")
 		}	
 	}
 
@@ -736,16 +769,17 @@ class poker {
 
 function playerBet() {
 	bet = document.getElementById('betNumber').value;
-	document.getElementById('betNumber').value = "";
-	game.playerBet(bet);
-	game.updateMoneyDisplay();
-
-	document.getElementById('betContainer').style.display = 'none';
-	if (game.betTimes === 0) {
-		game.player.addCardEvents();
-		game.betTimes++;
-	} else {
-		computerPlay();
+	if (game.playerBet(bet)) {
+		document.getElementById('betNumber').value = "";
+		game.updateMoneyDisplay();
+		document.getElementById('betContainer').style.display = 'none';
+		
+		if (game.betTimes === 0) {
+			game.player.addCardEvents();
+			game.betTimes++;
+		} else {
+			computerPlay();
+		}
 	}
 }
 
@@ -765,29 +799,42 @@ function endGame() {
 
 	game.computer.displayComputerCards();
 
-	// game.sortPlayerCards();
-	
-	// cleanUp();
+	game.sortPlayerCards();
 
-	// if (game.player.handScore() === game.computer.handScore()) {
-	// 	winString = game.compareHands();
-	// 	if (winString === "Player") {
-	// 		console.log("You won!!")
-	// 	} else if (winString === "Computer") {
-	// 		console.log("Computer won!!");
-	// 	} else {
-	// 		console.log("Ended in a tie...");
-	// 	}
-	// } else {
-	// 	console.log(game.playerHandScore() > game.computerHandScore() ? "You win!" : "You loose!");
-	// }
-	// if (game.money < 1) {
-	// 	playAgain.style.display = 'none';
-	// 	moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
-	// } else {
-	// 	playAgain.style.display = 'block';
-	// 	moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
-	// }
+	console.log(game.player.hand, game.computer.hand);
+	cleanUp();
+
+	if (game.player.handScore() === game.computer.handScore()) {
+		winString = game.compareHands();
+		if (winString === "Player") {
+			winLoosePara.innerHTML = "YOU'RE IN THE MONEY";
+			moneyLost.innerHTML = "Guess the dealer got a bit excited...you won't see him around here again. Security!";
+			game.money = game.money + (game.bet * 2);
+		} else if (winString === "Computer") {
+			winLoosePara.innerHTML = "You lost...heh heh heh. Chump.";	
+			moneyLost.innerHTML = "Sorry, bud, you lost: $" + game.bet;
+			game.money = game.money;	
+		} else {
+			winLoosePara.innerHTML = "You tied, lucky duck.";
+			moneyLost.innerHTML = "Here's your money back, don't forget to spend it all here!";
+			game.money = game.money + game.bet;
+		}
+	} else if (game.player.handScore() > game.computer.handScore()) {
+		winLoose.innerHTML = "YOU'RE IN THE MONEY";
+		moneyLost.innerHTML = "Guess the dealer got a bit excited...you won't see him around here again. Security!";
+		game.money = game.money + (game.bet * 2);
+	} else if (game.computer.handScore() > game.player.handScore()) {
+		winLoosePara.innerHTML = "You loose! Sucker!";
+		moneyLost.innerHTML = "Sorry, bud, you lost: $" + game.bet;
+		game.money = game.money;	
+	}
+	if (game.money < 1) {
+		playAgain.style.display = 'none';
+		moneyLeft.innerHTML = "You'd better come back when you have a bit more dough...guards, get 'em outta here.";
+	} else {
+		playAgain.style.display = 'block';
+		moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
+	}
 }
 
 function switchCards(event) {
@@ -836,7 +883,12 @@ function removeCard(exchangeCards, cardLoc) {
 }
 
 function quit() {
+	let playerData = JSON.parse(localStorage.getItem(game.playerName));
 
+	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.score, "money": game.money, "password": playerData.password};
+	localStorage.removeItem(playerData.name);
+	localStorage.setItem(playerData.name, JSON.stringify(data));
+	window.location.href = "index.html";
 }
 
 function play() {

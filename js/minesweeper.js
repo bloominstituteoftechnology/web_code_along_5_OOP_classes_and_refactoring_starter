@@ -166,10 +166,11 @@ function updateBoard(playerOne) {
 function populateMines(playerOne) {
 	let size = playerOne.size;
 	let randomNum = Math.floor(Math.random() * size) + size;
-//if the random number is less than five (less than five mines) add ten to it to 
-//ensure that there is a sufficient number of mines	
-	if (randomNum < 10) {
-		randomNum += 5;
+// if the random number is less than size (less than five mines)
+// add the size of the board to it to ensure that there 
+// are a sufficient number of mines.
+	if (randomNum < size) {
+		randomNum += size;
 	}
 	
 	let x, y = 0;
@@ -178,8 +179,8 @@ function populateMines(playerOne) {
 		x = Math.floor(Math.random() * size);
 		y = Math.floor(Math.random() * size);
 
-//Check to make sure there isn't already a mine there, if there is
-//remove one from the loop counter and continue on
+// Check to make sure there isn't already a mine there, if there is
+// remove one from the loop counter and continue on.
 		let tooManyMines = placeMine(x, y, size, playerOne);
 		if (tooManyMines) {
 			i -=1;
@@ -188,7 +189,7 @@ function populateMines(playerOne) {
 }
 
 function placeMine(x, y, size, playerOne) {
-	if (playerOne.mineArr[x][y].value != 10) {
+	if (playerOne.mineArr[x][y].value < 10) {
 		playerOne.mineArr[x][y].value = 10;
 		if (!xTooBig(x, size)) {
 			playerOne.mineArr[x+1][y].value += 1;

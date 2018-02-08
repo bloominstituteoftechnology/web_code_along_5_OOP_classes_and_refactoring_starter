@@ -8,6 +8,84 @@ body {
 	background-color: black;
 }
 
+@media screen and (max-width: 500px) {
+	body {
+		background-color: green;
+	}
+
+	h1 {
+		text-align: center;
+	}
+
+	.images {
+		display: inline-block;
+	}
+}
+
+@media screen and (min-width: 500px){
+	@keyframes dropDown {
+		0% {transform: translateX(60%);color: black;}
+		25% {transform: translateX(80%);color: white;}
+		50% {transform: translateX(100%);color: black;}
+		75% {transform: translateX(80%);color: white;}
+		100% {transform: translateX(60%);color: black;}
+	}
+	@keyframes moveBalls {
+		0% {opacity: .9; color: black;}
+		25% {opacity: .5; color: white;}
+		50% {opacity: 0; color: gold;}
+		75% {opacity: .5; color: white;}
+		100% {opacity: .9; color: black;}
+	}
+
+	div .dot {
+		height: 150px;
+		width: 150px;
+		background-color: gold;
+		border-radius: 50%;
+		position: fixed;
+		filter: blur(15px);
+		animation-name: moveBalls;
+	    animation-duration: 4s;
+	    animation-direction: alternate;
+	    animation-iteration-count: infinite;
+	    z-index: 2;
+	}
+
+	div #dot1 {
+		height: 300px;
+		width: 300px;
+		animation-duration: 8s;
+	}
+
+	div #dot2 {
+		height: 75px;
+		width: 75px;
+		animation-duration: 2s;
+	}
+
+	div #dot3 {
+		animation-duration: 4s;
+	}
+
+	div #dot4 {
+		height: 75px;
+		width: 75px;
+		animation-duration: 1s;
+	}
+
+	div #dot5 {
+		height: 250px;
+		width: 250px;
+		animation-duration: 6s;
+	}
+
+	div #dot6 {
+		height: 125px;
+		width: 125px;
+		animation-duration: 3s;
+	}
+}
 h1 {
 	position: absolute;
 	color: white;
@@ -21,13 +99,7 @@ h1 {
     animation-iteration-count: infinite;
 }
 
-@keyframes dropDown {
-	0% {transform: translateX(60%);color: black;}
-	25% {transform: translateX(80%);color: white;}
-	50% {transform: translateX(100%);color: black;}
-	75% {transform: translateX(80%);color: white;}
-	100% {transform: translateX(60%);color: black;}
-}
+
 
 h2 {
 	color: white;
@@ -78,60 +150,4 @@ button {
 
 .images:hover {
 	box-shadow: 0px 0px 900px 0px rgba(255, 255, 255, 0.9);
-}
-
-div .dot {
-	height: 150px;
-	width: 150px;
-	background-color: gold;
-	border-radius: 50%;
-	position: fixed;
-	filter: blur(15px);
-	animation-name: moveBalls;
-    animation-duration: 4s;
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
-    z-index: 2;
-}
-
-div #dot1 {
-	height: 300px;
-	width: 300px;
-	animation-duration: 8s;
-}
-
-div #dot2 {
-	height: 75px;
-	width: 75px;
-	animation-duration: 2s;
-}
-
-div #dot3 {
-	animation-duration: 4s;
-}
-
-div #dot4 {
-	height: 75px;
-	width: 75px;
-	animation-duration: 1s;
-}
-
-div #dot5 {
-	height: 250px;
-	width: 250px;
-	animation-duration: 6s;
-}
-
-div #dot6 {
-	height: 125px;
-	width: 125px;
-	animation-duration: 3s;
-}
-
-@keyframes moveBalls {
-	0% {opacity: .9; color: black;}
-	25% {opacity: .5; color: white;}
-	50% {opacity: 0; color: gold;}
-	75% {opacity: .5; color: white;}
-	100% {opacity: .9; color: black;}
 }

@@ -374,6 +374,9 @@ class blackJack {
  		if (bet > this.money) {
  			alert("Come on, Charlie, we both know you don't have that kinda dough...");
  			return false;
+ 		} else if (bet < 1) {
+ 			alert("You've gotta bet something, come on, I'm not going to sit around all day for ya.");
+ 			return false;
  		} else {
  			this.money -= bet;
  			this.bet += bet;
@@ -456,11 +459,11 @@ function endGame() {
 		game.money = game.money + game.bet + (game.bet * 2)
 	} else if (game.computerHasBlackJack()) {
 		winLoose.innerHTML = "Woah, baby, looks like you're fresh outta luck...";
-		moneyLost.innerHTML = "Sorry, homie, you lost: $" + game.bet;
+		moneyLost.innerHTML = "Sorry, bud, you lost: $" + game.bet;
 		game.money = game.money;
 	} else if (playerScore > 21) {
 		winLoose.innerHTML = "You busted...try not to be so greedy next time, eh?";
-		moneyLost.innerHTML = "Sorry, homie, you lost: $" + game.bet;
+		moneyLost.innerHTML = "Sorry, bud, you lost: $" + game.bet;
 		game.money = game.money;
 	} else if (computerScore > 21) {
 		winLoose.innerHTML = "Computer busted! You win!";

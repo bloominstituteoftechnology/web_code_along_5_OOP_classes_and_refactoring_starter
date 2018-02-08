@@ -1,3 +1,4 @@
+//Funky Town used from: https://www.youtube.com/watch?v=ax68rWI4Tuk
 let audio = new Audio('images/FunkyTown.mp3');
 audio.play();
 
@@ -7,7 +8,10 @@ isLoggedIn();
 function isLoggedIn() {
     let logIn = sessionStorage.getItem('logIn');
     if (logIn) {
-        document.getElementById('firstVisit').innerHTML = "Back for more, eh? Good luck, chump.";
+        let currentName = localStorage.getItem("currentName");
+        playerData = JSON.parse(localStorage.getItem(currentName));
+
+        document.getElementById('firstVisit').innerHTML = "Back for more, eh? Good luck, chump. You have $" + playerData.money;
         document.getElementById('nameContainer').style.display = 'none';
         document.getElementById('passContainer').style.display = 'none';
         displayGameImages();

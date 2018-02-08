@@ -2,37 +2,28 @@
 # Casino
 ## A collection of Card games (and Minesweeper) intended to titilate the user.
 ### Brief Description
-<p>I think that the logic behind building a card game (blackjack especially) is perfect for someone starting out in a language. I want to expand my knowledge of javascript, html, and css and this project is the perfect opportunity!</p>
-<img>(for future use)[My image](username.github.com/repository/img/image.jpg)</img><p>Not sure how to get images in here...</p>
-<p>This project will include:</p>
+I think that the logic behind building a card game (blackjack especially) is perfect for someone starting out in a language. I want to expand my knowledge of javascript, html, and css and this project is the perfect opportunity!
+![wireframe](wireframe.png)
+This project will include:
 * Blackjack
 * Poker
 * Minesweeper
 
-#### Challenges
+#### Technologies Used
+1. Javascript
+2. HTML
+3. CSS
 
-* Edge cases (making my code robust)
-* Visuals(CSS...)
-* Time(as usual)
-* Not knowing if I am overextending myself until I already invest too much time in a new feature
+#### Approach taken
+I started with minesweeper and when I had that up and running I created a deck class, a card class, and a game class. From these I was able to break blackjack and poker down into their base components and reuse a bit of code. I still want to refactor so that I can utilize prototyping and not have nearly identical methods in my classes.
 
-#### Things still to finish (in order from best to worst...):
-1. Right Clicking for Minesweeper
-2. Making Minesweeper look better than it does (aka not a jumble of squares...)
-3. Fleshing out the logic for Blackjack
-4. Logic for Poker
-5. Creating the visuals for the card games
-6. Cleaning up the code and making it readable...to my future self...
+#### How to Use
+Start at the landing page. Enter your name and choose a password. If you are saved in the system your previous money will be loaded and you can choose either of the three games. If you are a new user you will need to start with Minesweeper to earn some money first before moving on to Poker and Blackjack.
 
-
-#### Ideas
-* Have a finishing 'animation' for Minesweeper when the bomb appears
-* Cleaning up Minesweeper code / breaking up the classes a bit
-* 'Card dealing' animation? Something other than just having new cards appear when dealt
-* 'Double down", "Splitting", "All those annoying-to-code features of Blackjack
-* I really want to have some sort of a roulette but just thinking about managing the speed of the table spin / the ball bouncing around gives me a headache...
-* Betting!
-* A more robust login system
+#### Unsolved problems
+1. Code needs to be refactored a bit. Could be more robust.
+2. Certain edge cases (aka a 1000X1000 board in minesweeper shouldn't be possible)
+3. Improve the AI of the poker game
 
 
 #### Links and Resources
