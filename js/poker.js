@@ -49,7 +49,7 @@ function setUp() {
 	playAgain.style.display = "none";
 	changeCardsButt.style.display = "none";
 	playingBoard.style.display = "block";
-	winLoose.innerHTML = "";
+	winLoosePara.innerHTML = "";
 	moneyLeft.innerHTML = "";
 
 	bottomCardOne.setAttribute('src', imageHeader + 'honor_clubs.png');
