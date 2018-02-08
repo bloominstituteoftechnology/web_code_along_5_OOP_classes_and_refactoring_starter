@@ -887,13 +887,19 @@ function removeCard(exchangeCards, cardLoc) {
 function quit() {
 	let playerData = JSON.parse(localStorage.getItem(game.playerName));
 
-	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.score, "money": game.money, "password": playerData.password};
+	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.bestScore, "money": game.money, "password": playerData.password};
 	localStorage.removeItem(playerData.name);
 	localStorage.setItem(playerData.name, JSON.stringify(data));
 	window.location.href = "index.html";
 }
 
 function play() {
+	let playerData = JSON.parse(localStorage.getItem(game.playerName));
+
+	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.bestScore, "money": game.money, "password": playerData.password};
+	localStorage.removeItem(playerData.name);
+	localStorage.setItem(playerData.name, JSON.stringify(data));
+
 	setUp();
 }
 
