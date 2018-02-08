@@ -2,12 +2,12 @@
 # Casino
 ## A collection of Card games (and Minesweeper) intended to titilate the user.
 ### Brief Description
-I think that the logic behind building a card game (blackjack especially) is perfect for someone starting out in a language. I want to expand my knowledge of javascript, html, and css and this project is the perfect opportunity!
+This project includes the games:
+1. Minesweeper
+2. Blackjack
+3. Poker
+
 ![wireframe](wireframe.png)
-This project will include:
-* Blackjack
-* Poker
-* Minesweeper
 
 #### Technologies Used
 1. Javascript
