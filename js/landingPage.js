@@ -45,7 +45,7 @@ function start() {
     if (playerData === null) {
         playerData = {"name": currentName, "playerScore": 0, "size": 0, "bestScore": 0, "money": 0, "password": passwordOne};
         localStorage.setItem(currentName, JSON.stringify(playerData));
-
+        
         sessionStorage.setItem('logIn', true);
         document.getElementById('passContainer').style.display = 'none';
         displayGameImages();    

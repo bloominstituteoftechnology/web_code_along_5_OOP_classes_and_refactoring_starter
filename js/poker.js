@@ -565,17 +565,17 @@ class poker {
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'none';
 				betHugeImage.style.display = 'none';
- 			} else if (this.bet < 50) {
+ 			} else if (this.bet < 10) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'block';
 				betBigImage.style.display = 'none';
 				betHugeImage.style.display = 'none';
- 			} else if (this.bet < 100) {
+ 			} else if (this.bet < 50) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'block';
 				betHugeImage.style.display = 'none';
- 			} else if (this.bet >= 100) {
+ 			} else if (this.bet > 100) {
  				betTinyImage.style.display = 'none';
 				betSmallImage.style.display = 'none';
 				betBigImage.style.display = 'none';

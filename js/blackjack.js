@@ -374,7 +374,7 @@ class blackJack {
  		if (bet > this.money) {
  			alert("Come on, Charlie, we both know you don't have that kinda dough...");
  			return false;
- 		} else if (bet < 1) {
+ 		} else if (!bet) {
  			alert("You've gotta bet something, come on, I'm not going to sit around all day for ya.");
  			return false;
  		} else {
