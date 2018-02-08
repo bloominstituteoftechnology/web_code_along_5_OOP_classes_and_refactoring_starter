@@ -36,13 +36,17 @@ document.getElementById('playButt').addEventListener('click', play);
 document.getElementById('quitButt').addEventListener('click', quit);
 document.getElementById('changeCardsButt').addEventListener('click', switchCards);
 
-function setUp() {
+function setUp(money) {
 	let playerName = localStorage["currentName"];
 	let playerData = JSON.parse(localStorage.getItem(playerName));
 
 	if (playerData.money === 0) {
 		winLoose.innerHTML = "Come on, chump. We both know you ain't got enough money to play here. Either check out Minesweeper or scram! Guards!";
 		setTimeout(quit, delay);
+	}
+
+	if (money) {
+		playerData.money += money;
 	}
 
 	document.getElementById('betContainer').style.display = 'block';
@@ -837,6 +841,12 @@ function endGame() {
 		playAgain.style.display = 'block';
 		moneyLeft.innerHTML = "You've got some dough yet, here's how much you've got: $" + game.money;
 	}
+
+	let playerData = JSON.parse(localStorage.getItem(game.playerName));
+
+	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.score, "money": game.money, "password": playerData.password};
+	localStorage.removeItem(playerData.name);
+	localStorage.setItem(playerData.name, JSON.stringify(data));
 }
 
 function switchCards(event) {
@@ -894,12 +904,6 @@ function quit() {
 }
 
 function play() {
-	let playerData = JSON.parse(localStorage.getItem(game.playerName));
-
-	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.bestScore, "money": game.money, "password": playerData.password};
-	localStorage.removeItem(playerData.name);
-	localStorage.setItem(playerData.name, JSON.stringify(data));
-
 	setUp();
 }
 

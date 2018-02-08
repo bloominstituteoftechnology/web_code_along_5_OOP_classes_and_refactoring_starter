@@ -34,13 +34,17 @@ document.getElementById('betButt').addEventListener('click', playerBet);
 document.getElementById('playButt').addEventListener('click', play);
 document.getElementById('quitButt').addEventListener('click', quit);
 
-function setUp() {	
+function setUp(money) {	
 	let playerName = localStorage["currentName"];
 	let playerData = JSON.parse(localStorage.getItem(playerName));
 
 	if (playerData.money === 0) {
 		winLoose.innerHTML = "Come on, chump. We both know you ain't got enough money to play here. Either check out Minesweeper or scram! Guards!";
 		setTimeout(quit, delay);
+	}
+
+	if (money) {
+		playerData.money += money;
 	}
 
 	playAgain.style.display = "none";
@@ -279,10 +283,10 @@ class Card {
 }
 
 class blackJack {
- 	constructor(name) {
+ 	constructor(name, money) {
  		this.player = new Hand();
  		this.computer = new Hand();
- 		this.money = 0;
+ 		this.money = money;
  		this.bet = 0;
  		this.playerName = name;
  	}
@@ -497,12 +501,6 @@ function endGame() {
 }
 
 function play() {
-	let playerData = JSON.parse(localStorage.getItem(game.playerName));
-
-	let data = {"name": playerData.name, "playerScore": playerData.score, "bestScore": playerData.score, "money": game.money, "password": playerData.password};
-	localStorage.removeItem(playerData.name);
-	localStorage.setItem(playerData.name, JSON.stringify(data));
-
 	setUp();
 }
 
