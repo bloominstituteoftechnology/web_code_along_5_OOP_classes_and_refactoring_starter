@@ -794,7 +794,7 @@ function computerPlay() {
 	game.computer.cleanComputerBoard();
 	game.computer.displayComputerCards();
 
-	setTimeout(game.switchComputerCards());
+	setTimeout(game.switchComputerCards(), delay);
 	setTimeout(game.computer.displayComputerCards(), delay);
 	setTimeout(finishGame(), delay);
 }
@@ -858,7 +858,11 @@ function switchCards(event) {
 	game.cardExchange = 0;
 	changeCardsButt.style.display = 'none';
 	game.player.removeCardEvents();
-	document.getElementById('betContainer').style.display = 'block';
+	if (game.money === 0) {
+		computerPlay();
+	} else {
+		document.getElementById('betContainer').style.display = 'block';
+	}
 }
 
 function selectCard(event) {

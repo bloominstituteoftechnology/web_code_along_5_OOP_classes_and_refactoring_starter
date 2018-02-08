@@ -2,6 +2,41 @@
 let audio = new Audio('images/FunkyTown.mp3');
 audio.play();
 
+let blackJack = document.getElementById("blackJack");
+let poker = document.getElementById("poker")
+let minesweeper = document.getElementById("minesweeper");
+
+let pokerPhoto = document.createElement('img');
+let blackJackPhoto = document.createElement('img');
+let minesweeperPhoto = document.createElement('img');
+
+pokerPhoto.src = "images/pokerPhoto.png";
+blackJackPhoto.src = "images/blackjackPhoto.png";
+minesweeperPhoto.src = "images/minesweeperPhoto.png";
+
+pokerPhoto.classList.add('images');
+blackJackPhoto.classList.add('images');
+minesweeperPhoto.classList.add('images');
+
+poker.appendChild(pokerPhoto);
+blackJack.appendChild(blackJackPhoto);
+minesweeper.appendChild(minesweeperPhoto);
+
+pokerPhoto.addEventListener('click', goToPoker);
+blackJackPhoto.addEventListener('click', goToBlackJack);
+minesweeperPhoto.addEventListener('click', goToMinesweeper);
+
+function goToPoker() {
+    location.href="poker.html";
+}
+
+function goToBlackJack() {
+    location.href='blackjack.html';    
+}
+
+function goToMinesweeper() {
+    location.href='minesweeper.html';
+}
 animateDiv();
 isLoggedIn();
 
@@ -14,7 +49,7 @@ function isLoggedIn() {
         document.getElementById('firstVisit').innerHTML = "Back for more, eh? Good luck, chump. You have $" + playerData.money;
         document.getElementById('nameContainer').style.display = 'none';
         document.getElementById('passContainer').style.display = 'none';
-        displayGameImages();
+        displayGameImages(playerData);
     } else {
         document.getElementById('gameImages').style.display = 'none';
         document.getElementById('passContainer').style.display = 'none';
@@ -40,7 +75,6 @@ function start() {
     localStorage.setItem("currentName", currentName);
 
     playerData = JSON.parse(localStorage.getItem(currentName));
-    console.log(playerData);
 
     if (playerData === null) {
         playerData = {"name": currentName, "playerScore": 0, "size": 0, "bestScore": 0, "money": 0, "password": passwordOne};
@@ -48,7 +82,7 @@ function start() {
         
         sessionStorage.setItem('logIn', true);
         document.getElementById('passContainer').style.display = 'none';
-        displayGameImages();    
+        displayGameImages(playerData);    
         document.getElementById('firstVisit').innerHTML = "Ah, a first time visitor. Welcome, welcome. Your password has been saved for your next visit. You'd better start with minesweeper to earn some dough."
     } else {
         if (validate(currentName, passwordOne, passwordTwo, playerData)) {
@@ -59,7 +93,7 @@ function start() {
                 document.getElementById('firstVisit').innerHTML = "Woah, woah, woah, looks like you had a bit too much fun last time...better head to minesweeper to make some dough.";
             }
             document.getElementById('passContainer').style.display = 'none';
-            displayGameImages();
+            displayGameImages(playerData);
         } else {
             erasePassword();
         }
@@ -94,8 +128,23 @@ function validate(playerName, passOne, passTwo, playerData) {
     }
 }
 
-function displayGameImages() {
-    document.getElementById('gameImages').style.display = 'block';
+function displayGameImages(playerData) {
+    console.log(playerData.money);
+    if (playerData.money > 0) {
+        document.getElementById('gameImages').style.display = 'block';
+    } else {
+//add a 'lock' over the image...separate the image from the html and
+//add in a click event so that you can take it off!
+        blackJackPhoto.removeEventListener('click', goToBlackJack);
+        pokerPhoto.removeEventListener('click', goToPoker);
+        blackJackPhoto.style.opacity = 0.2;
+        pokerPhoto.style.opacity = 0.2;
+        blackJackPhoto.removeEventListener('click', goToBlackJack)
+        pokerPhoto.removeEventListener('click', goToPoker)
+
+        document.getElementById('gameImages').style.display = 'block';
+
+    }
 }
 
 //Borrowed from http://jsfiddle.net/Xw29r/15/

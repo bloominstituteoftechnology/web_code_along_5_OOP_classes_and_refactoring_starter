@@ -110,6 +110,11 @@ function clickFunction(e, playerOne) {
 			playerOne.score += 50;
 			endGame(playerOne);
 		}
+		if (checkWin(playerOne)) {
+			playerOne.score += 50;
+			document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
+			endGame(playerOne);
+		}
 		document.getElementById('score').innerHTML = 'Player Score: ' + playerOne.score;
 	}
 }
