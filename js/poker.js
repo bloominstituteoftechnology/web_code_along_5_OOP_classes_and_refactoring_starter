@@ -736,7 +736,8 @@ class poker {
 		winLoosePara.innerHTML = "Dealer exchanges " + numRemoved + " cards.";
 		for (let i = 0; i < numRemoved; i++) {
 			this.computer.addCard();
-		}	
+		}
+		setTimeout(game.computer.cleanComputerBoard(), delay);
 	}
 
 	handScore() {
@@ -789,16 +790,17 @@ function computerPlay() {
 	game.computer.cleanComputerBoard();
 	game.computer.displayComputerCards();
 
-	setTimeout(game.switchComputerCards(), delay);
+	setTimeout(game.switchComputerCards());
+	setTimeout(game.computer.displayComputerCards(), delay);
+	setTimeout(finishGame(), delay);
+}
 
+function finishGame() {
 	setTimeout(endGame, delay);
 }
 
 function endGame() {
 	game.computer.cleanComputerBoard();
-
-	game.computer.displayComputerCards();
-
 	game.sortPlayerCards();
 
 	console.log(game.player.hand, game.computer.hand);
