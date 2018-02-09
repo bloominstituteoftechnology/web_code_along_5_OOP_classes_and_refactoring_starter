@@ -91,7 +91,7 @@ h1 {
 	color: white;
 	height: 5vh;
 	width: 40vw;
-	top: 50%;
+	top: 30%;
 	transform: translateY(-50%);
 	animation-name: dropDown;
     animation-duration: 5s;
@@ -159,11 +159,9 @@ button {
 #gameText {
 	color: white;
 	display: inline-block;
-	position: relative;
+	text-align: center;
+	width: 100px;
 	float: left;
 	margin: auto;
-	left: 50%;
 	top: 200px;
-	max-width: 20%;
-	max-height: 15%;
 }
