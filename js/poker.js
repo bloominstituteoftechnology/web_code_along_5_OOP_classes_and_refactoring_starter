@@ -702,11 +702,11 @@ class poker {
 // Checking for two pair. Find the pairs and iterate through the array, taking out the one card
 // that isn't in a pair.
 		} else if (initialScore === 3) {
+			let handArr = this.computer.getValueOfHand(this.computer.returnCards());
 			let pairArr = this.computer.findPairs();
 			for (let i = 0; i < pairArr.length-1; i++) {
 				if (pairArr[i] === 1) {
-					let index = (this.computer.returnCards).indexOf(pairArr[i]);
-					this.computer.removeCard(index);
+					this.computer.removeCard(i);
 					numRemoved++;
 				}
 			}
@@ -805,6 +805,7 @@ function finishGame() {
 
 function endGame() {
 	game.computer.cleanComputerBoard();
+	game.sortComputerCards();
 	game.sortPlayerCards();
 
 	console.log(game.player.hand, game.computer.hand);
