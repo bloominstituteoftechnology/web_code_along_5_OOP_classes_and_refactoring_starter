@@ -501,7 +501,7 @@ function endGame() {
 }
 
 function play() {
-	setUp();
+	setUp(500);
 }
 
 function quit() {
