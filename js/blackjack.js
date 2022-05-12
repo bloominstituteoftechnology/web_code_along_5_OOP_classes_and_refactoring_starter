@@ -103,6 +103,8 @@ function cleanUp() {
 	game.cleanComputerHand();
 }
 
+// Have them recreate?
+
 class Deck {
  	constructor(numDecks) {
  		this.numDecks = numDecks;
