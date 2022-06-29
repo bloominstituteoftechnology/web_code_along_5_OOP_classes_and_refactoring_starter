@@ -96,6 +96,8 @@
 	 game.cleanPlayerHand();
 	 game.cleanComputerHand();
  }
+
+ // =============== 👉 [Code-Along 5.1] - step 1 + 2 + 3
  
  class Hand {
 	 constructor() {
