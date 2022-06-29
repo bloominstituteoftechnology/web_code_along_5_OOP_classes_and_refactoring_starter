@@ -190,7 +190,7 @@
 				computerTop.removeChild(computerTop.firstChild);
 			}
 		}
- 
+  // =============== 👉 [Code-Along 5.2] - step 2
 		displayPlayerCards() {
 			for (let i = 0; i < this.hand.length; i++) {
 				let rank = this.hand[i].rank;
@@ -339,7 +339,7 @@
 			} else {
 				this.money -= bet;
 				this.bet += bet;
-
+ // =============== 👉 [Code-Along 5.2] - step 1
 				if (this.bet < 5) {
 					betTinyImage.style.display = 'block';
 					betSmallImage.style.display = 'none';
