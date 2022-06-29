@@ -1,7 +1,5 @@
 # Blackjack
 
-Recording: https://bloomtech-1.wistia.com/medias/zrc4xxl8m3
-
 ## Setup
 1. Clone the project
 2. cd into the directory
