@@ -97,6 +97,47 @@
 	 game.cleanComputerHand();
  }
  
+ class Deck {
+		constructor(numDecks) {
+			this.numDecks = numDecks;
+			this.deck = [];
+		}
+ 
+		buildDeck() {
+			let counter = 0;
+			for (let j = 0; j < this.numDecks; j++) {
+				for (let i = 0; i < 4; i++) {
+					for (let k = 0; k < 13; k++) {
+						this.deck[counter] = new Card(suitArr[i], rankArr[k]);
+						counter++;
+					}
+				}
+			}
+		}
+ 
+		printDeck() {
+			console.log(this.deck);
+		}
+ 
+		shuffleDeck() {
+		//Fisher-Yates shuffle
+			let i = 0;
+			let j = 0;
+			let temp = null;
+ 
+			 for (i = this.deck.length - 1; i > 0; i -= 1) {
+				 j = Math.floor(Math.random() * (i + 1));
+				 temp = this.deck[i];
+				 this.deck[i] = this.deck[j];
+				 this.deck[j] = temp;
+			 }
+		}
+ 
+		dealCard() {
+			return this.deck.pop();
+		}
+ }
+ 
  class Hand {
 	 constructor() {
 		 this.deck = new Deck(1);
