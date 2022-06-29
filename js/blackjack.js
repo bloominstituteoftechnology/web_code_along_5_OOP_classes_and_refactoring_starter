@@ -378,25 +378,17 @@
 			} else {
 				this.money -= bet;
 				this.bet += bet;
+				betTinyImage.style.display = 'none';
+				betSmallImage.style.display = 'none';
+				betBigImage.style.display = 'none';
+				betHugeImage.style.display = 'none';
 				if (this.bet < 5) {
 					betTinyImage.style.display = 'block';
-				 betSmallImage.style.display = 'none';
-				 betBigImage.style.display = 'none';
-				 betHugeImage.style.display = 'none';
 				} else if (this.bet < 10) {
-					betTinyImage.style.display = 'none';
 				 betSmallImage.style.display = 'block';
-				 betBigImage.style.display = 'none';
-				 betHugeImage.style.display = 'none';
 				} else if (this.bet < 50) {
-					betTinyImage.style.display = 'none';
-				 betSmallImage.style.display = 'none';
 				 betBigImage.style.display = 'block';
-				 betHugeImage.style.display = 'none';
-				} else if (this.bet > 100) {
-					betTinyImage.style.display = 'none';
-				 betSmallImage.style.display = 'none';
-				 betBigImage.style.display = 'none';
+				} else if (this.bet >= 50) {
 				 betHugeImage.style.display = 'block';
 				}
 			}
