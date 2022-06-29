@@ -339,10 +339,7 @@
 			} else {
 				this.money -= bet;
 				this.bet += bet;
-				betTinyImage.style.display = 'none';
-				betSmallImage.style.display = 'none';
-				betBigImage.style.display = 'none';
-				betHugeImage.style.display = 'none';
+
 				if (this.bet < 5) {
 					betTinyImage.style.display = 'block';
 					betSmallImage.style.display = 'none';
