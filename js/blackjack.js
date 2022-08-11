@@ -33,7 +33,7 @@
  document.getElementById('betButt').addEventListener('click', playerBet);
  document.getElementById('playButt').addEventListener('click', play);
 
- game = new blackJack("Casey");
+ let game;
  
  function setUp(money) {	
 	 let playerData = { money };
@@ -85,6 +85,7 @@
 	 document.getElementById('betContainer').style.display = 'block';
 	 document.getElementById('hitOrStay').style.display = 'none';
  
+	 game = new blackJack("Casey");
 	 game.cleanPlayerHand();
 	 game.cleanComputerHand();
 	 game.buildHand();
