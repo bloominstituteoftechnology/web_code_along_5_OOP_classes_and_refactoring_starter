@@ -3,7 +3,8 @@
 ## Setup
 1. Clone the project
 2. cd into the directory
-3. run `open index.html`
+3. run `git fetch && git reset --hard origin/5.2-starter`
+4. run `open index.html`
 
 Since there aren't any external dependencies (for now...) there is no installation process. 
 
