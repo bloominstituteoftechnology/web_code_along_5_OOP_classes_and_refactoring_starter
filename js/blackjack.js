@@ -32,8 +32,6 @@
  document.getElementById('stayButt').addEventListener('click', stay);
  document.getElementById('betButt').addEventListener('click', playerBet);
  document.getElementById('playButt').addEventListener('click', play);
-
- let game;
  
  function setUp(money) {	
 	 let playerData = { money };
@@ -98,8 +96,47 @@
 	 game.cleanPlayerHand();
 	 game.cleanComputerHand();
  }
-
- // =============== 👉 [Code-Along 5.1] - step 1 + 2 + 3
+ 
+ class Deck {
+		constructor(numDecks) {
+			this.numDecks = numDecks;
+			this.deck = [];
+		}
+ 
+		buildDeck() {
+			let counter = 0;
+			for (let j = 0; j < this.numDecks; j++) {
+				for (let i = 0; i < 4; i++) {
+					for (let k = 0; k < 13; k++) {
+						this.deck[counter] = new Card(suitArr[i], rankArr[k]);
+						counter++;
+					}
+				}
+			}
+		}
+ 
+		printDeck() {
+			console.log(this.deck);
+		}
+ 
+		shuffleDeck() {
+		//Fisher-Yates shuffle
+			let i = 0;
+			let j = 0;
+			let temp = null;
+ 
+			 for (i = this.deck.length - 1; i > 0; i -= 1) {
+				 j = Math.floor(Math.random() * (i + 1));
+				 temp = this.deck[i];
+				 this.deck[i] = this.deck[j];
+				 this.deck[j] = temp;
+			 }
+		}
+ 
+		dealCard() {
+			return this.deck.pop();
+		}
+ }
  
  class Hand {
 	 constructor() {
@@ -192,25 +229,26 @@
 				computerTop.removeChild(computerTop.firstChild);
 			}
 		}
-  // =============== 👉 [Code-Along 5.2] - step 2
+ 
+		displayCard(card) {
+			const rank = card.rank;
+			const suit = card.suit;
+			const cardString = imageHeader + rank + "_of_" + suit + ".png";
+			const cardImg = document.createElement("img");
+			cardImg.setAttribute("src", cardString);
+			return cardImg;
+		}
+		
 		displayPlayerCards() {
 			for (let i = 0; i < this.hand.length; i++) {
-				let rank = this.hand[i].rank;
-				let suit = this.hand[i].suit;
-				let cardString = imageHeader + rank + "_of_" + suit + ".png";
-				let cardImg = document.createElement('img');
-				cardImg.setAttribute('src', cardString);
+				const cardImg = this.displayCard(this.hand[i]);
 				playerBottom.appendChild(cardImg);
 			}
 		}
- 
+		
 		displayComputerCards() {
 			for (let i = 0; i < this.hand.length; i++) {
-				let rank = this.hand[i].rank;
-				let suit = this.hand[i].suit;
-				let cardString = imageHeader + rank + "_of_" + suit + ".png";
-				let cardImg = document.createElement('img');
-				cardImg.setAttribute('src', cardString);
+				const cardImg = this.displayCard(this.hand[i]);
 				computerTop.appendChild(cardImg);
 			}
 		}
@@ -341,27 +379,18 @@
 			} else {
 				this.money -= bet;
 				this.bet += bet;
- // =============== 👉 [Code-Along 5.2] - step 1
+				betTinyImage.style.display = 'none';
+				betSmallImage.style.display = 'none';
+				betBigImage.style.display = 'none';
+				betHugeImage.style.display = 'none';
 				if (this.bet < 5) {
 					betTinyImage.style.display = 'block';
-					betSmallImage.style.display = 'none';
-					betBigImage.style.display = 'none';
-					betHugeImage.style.display = 'none';
 				} else if (this.bet < 10) {
-					betTinyImage.style.display = 'none';
-					betSmallImage.style.display = 'block';
-					betBigImage.style.display = 'none';
-					betHugeImage.style.display = 'none';
+				 betSmallImage.style.display = 'block';
 				} else if (this.bet < 50) {
-					betTinyImage.style.display = 'none';
-					betSmallImage.style.display = 'none';
-					betBigImage.style.display = 'block';
-					betHugeImage.style.display = 'none';
+				 betBigImage.style.display = 'block';
 				} else if (this.bet >= 50) {
-					betTinyImage.style.display = 'none';
-					betSmallImage.style.display = 'none';
-					betBigImage.style.display = 'none';
-					betHugeImage.style.display = 'block';
+				 betHugeImage.style.display = 'block';
 				}
 			}
 			return true;
