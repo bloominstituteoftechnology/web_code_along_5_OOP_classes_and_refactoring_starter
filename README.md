@@ -7,7 +7,7 @@
 4. run `open index.html`
 
 ## If you are running the 5.2-refactoring session run this command:
-1. git fetch && git reset --hard origin/5.2-starter
+1. `git fetch && git reset --hard origin/5.2-starter`
 
 Since there aren't any external dependencies (for now...) there is no installation process. 
 
