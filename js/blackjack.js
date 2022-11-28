@@ -230,25 +230,24 @@
 			}
 		}
  
-		displayCard(card) {
-			const rank = card.rank;
-			const suit = card.suit;
-			const cardString = imageHeader + rank + "_of_" + suit + ".png";
-			const cardImg = document.createElement("img");
-			cardImg.setAttribute("src", cardString);
-			return cardImg;
-		}
-		
 		displayPlayerCards() {
 			for (let i = 0; i < this.hand.length; i++) {
-				const cardImg = this.displayCard(this.hand[i]);
+				let rank = this.hand[i].rank;
+				let suit = this.hand[i].suit;
+				let cardString = imageHeader + rank + "_of_" + suit + ".png";
+				let cardImg = document.createElement("img");
+				cardImg.setAttribute("src", cardString);
 				playerBottom.appendChild(cardImg);
 			}
 		}
 		
 		displayComputerCards() {
 			for (let i = 0; i < this.hand.length; i++) {
-				const cardImg = this.displayCard(this.hand[i]);
+				let rank = this.hand[i].rank;
+				let suit = this.hand[i].suit;
+				let cardString = imageHeader + rank + "_of_" + suit + ".png";
+				let cardImg = document.createElement("img");
+				cardImg.setAttribute("src", cardString);
 				computerTop.appendChild(cardImg);
 			}
 		}
@@ -379,18 +378,26 @@
 			} else {
 				this.money -= bet;
 				this.bet += bet;
-				betTinyImage.style.display = 'none';
-				betSmallImage.style.display = 'none';
-				betBigImage.style.display = 'none';
-				betHugeImage.style.display = 'none';
 				if (this.bet < 5) {
 					betTinyImage.style.display = 'block';
+					betSmallImage.style.display = 'none';
+					betBigImage.style.display = 'none';
+					betHugeImage.style.display = 'none';
 				} else if (this.bet < 10) {
-				 betSmallImage.style.display = 'block';
+					betTinyImage.style.display = 'none';
+					betSmallImage.style.display = 'block';
+					betBigImage.style.display = 'none';
+					betHugeImage.style.display = 'none';
 				} else if (this.bet < 50) {
-				 betBigImage.style.display = 'block';
+					betTinyImage.style.display = 'none';
+					betSmallImage.style.display = 'none';
+					betBigImage.style.display = 'block';
+					betHugeImage.style.display = 'none';
 				} else if (this.bet >= 50) {
-				 betHugeImage.style.display = 'block';
+					betTinyImage.style.display = 'none';
+					betSmallImage.style.display = 'none';
+					betBigImage.style.display = 'none';
+					betHugeImage.style.display = 'block';
 				}
 			}
 			return true;
